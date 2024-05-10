@@ -5,7 +5,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
         <NavBar/>
+        <div className='px-12 py-12'>
         {children}
+        </div>
     </div>
   )
 }
