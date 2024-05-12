@@ -3,6 +3,7 @@ import { UserButton, useAuth, useClerk, useUser } from '@clerk/clerk-react';
 import { Skeleton } from './skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 import { Button } from './button';
+import Image from 'next/image';
 
 const UserMenuButton = () => {
     const { openUserProfile } = useClerk();
