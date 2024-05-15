@@ -1,15 +1,17 @@
-import NavBar from '@/components/NavBar'
-import React from 'react'
+import NavBar from "@/components/NavBar";
+import React from "react";
+import Sidebar from "./components/Sidebar";
+import WelcomeSection from "./components/WelcomeSection";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>
-        <NavBar/>
-        <div className='px-12 py-12'>
-        {children}
-        </div>
+    <div className="h-full">
+      <div className="h-full flex flex-row">
+        <Sidebar />
+        <div className="p-6">{children}</div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

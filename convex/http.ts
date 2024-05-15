@@ -12,8 +12,9 @@ http.route({
   handler: httpAction(async (ctx, request) => {
     const event = await validateRequest(request);
     if (!event) {
+      console.log("if worked")
       return new Response("Error occured", { status: 400 });
-    }
+    } console.log("else worked")
     switch (event.type) {
       case "user.created": // intentional fallthrough
       case "user.updated":
