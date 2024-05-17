@@ -92,7 +92,7 @@ const Sidebar = () => {
                   "relative flex items-center p-2.5 pl-4 space-x-4 transition-all ",
                   {
                     "text-black hover:text-black": pathname === item.route,
-                    "text-slate-600": pathname !== item.route,
+                    "text-slate-600 hover:text-slate-400": pathname !== item.route,
                   }
                 )}
                 style={{ paddingLeft: "16px" }} // Ensure the same padding on both active and inactive states

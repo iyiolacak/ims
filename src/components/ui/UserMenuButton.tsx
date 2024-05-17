@@ -4,6 +4,7 @@ import { Skeleton } from "./skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Separator } from "./separator";
 import { Input } from "./input";
+import { Search } from "lucide-react";
 
 const UserMenuButton = () => {
   const { openUserProfile } = useClerk();
@@ -14,17 +15,17 @@ const UserMenuButton = () => {
   if (!isLoaded) {
     return (
       <div className="h-[160px]">
-      <div className="h-[155px] flex flex-col w-full px-2 py-3 bg-white border rounded-xl shadow-sm">
-        <div className="flex items-center space-x-2 mt-3 mb-1">
-          <Skeleton className="w-10 h-10 rounded-xl" />
-          <div className="flex flex-col space-y-1">
-            <Skeleton className="w-24 h-4 rounded" />
-            <Skeleton className="w-32 h-3 rounded" />
+        <div className="h-[155px] flex flex-col w-full px-2 py-3 bg-white border rounded-xl shadow-sm">
+          <div className="flex items-center space-x-2 mt-3 mb-1">
+            <Skeleton className="w-10 h-10 rounded-xl" />
+            <div className="flex flex-col space-y-1">
+              <Skeleton className="w-24 h-4 rounded" />
+              <Skeleton className="w-32 h-3 rounded" />
+            </div>
           </div>
+          <Separator className="my-3" orientation="horizontal" />
+          <Skeleton className="w-full h-12 rounded-lg" />
         </div>
-        <Separator className="my-3" orientation="horizontal" />
-        <Skeleton className="w-full h-12 rounded-lg" />
-      </div>
       </div>
     );
   }
