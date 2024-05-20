@@ -9,7 +9,7 @@ const Orders = () => {
   return (
     <>
     <WelcomeSection title='Orders' description='You can manage your orders here.'/> 
-    <div>
+    <div className='w-96 h-72'>
       <RevenueChart/>
     </div>
     </>

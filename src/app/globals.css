@@ -65,6 +65,21 @@
       --ring: 212.7 26.8% 83.9%;
     }
   }
+  .fade-effect::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(
+      to top right,
+      white 0%,
+      white 10%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+  
 
   @layer base {
     * {
