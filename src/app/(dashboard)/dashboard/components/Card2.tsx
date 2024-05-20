@@ -5,6 +5,7 @@ import styles from "@/app/card.module.css";
 import React from "react";
 import Hashtag from "./Hashtag";
 import CardGrowthMiniCard from "./CardGrowthMiniCard";
+import RevenueChart from "./RevenueChart";
 interface CardProps {
   title: string;
   description: string;
@@ -26,8 +27,12 @@ const Card2 = () => {
           <Hashtag HashtagName="Macbook M2" />
         </div>
       </div>
-      <div className="flex flex-row items-start p-6 space-x-3">
+      <div className="flex flex-row justify-between items-start p-6 space-x-3">
         <CardGrowthMiniCard growthPositive={true} percent={26.72} />
+        <div>
+            asfasf
+            <RevenueChart/>
+        </div>
       </div>
     </div>
   );
