@@ -6,22 +6,10 @@ import React from "react";
 interface CardProps {
   title: string;
   description: string;
-  mainContent: any;
-  footerContent: any;
-  buttons: any;
-  gradient: any;
-  illustration: string;
-  icon?: any;
 }
 const Card = ({
   title,
   description,
-  mainContent,
-  footerContent,
-  buttons,
-  icon,
-  gradient,
-  illustration,
 }: CardProps) => {
   return (
     <div className="flex relative overflow-hidden border bg-white shadow-sm rounded-2xl w-[24rem] h-80 flex-col">
@@ -30,10 +18,9 @@ const Card = ({
       </div>
       <div className={`bg-white ${styles.card}`}></div>
       <div className="flex flex-col h-64 justify-end p-6">
-        <h2 className="text-3xl font-bold">December Report</h2>
+        <h2 className="text-3xl font-bold">{title}</h2>
         <p className="mt-2 text-slate-400 text-md w-80 mb-4">
-          Retrieve December report, analyze key data for informed strategic
-          decisions.
+          {description}
         </p>
         <div className="space-x-3">
           <Button className="bg-blue-700" size={"lg"} variant={"default"}>

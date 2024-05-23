@@ -1,13 +1,13 @@
 import clsx from "clsx";
-import { MoveUpRight } from "lucide-react";
+import { MoveDownLeft, MoveDownRight, MoveUpLeft, MoveUpRight } from "lucide-react";
 import React from "react";
 interface CardGrowthMiniCardInterface {
   growthPositive: boolean;
-  percent: number;
+  percentageChange: number;
 }
 const CardGrowthMiniCard = ({
   growthPositive,
-  percent,
+  percentageChange,
 }: CardGrowthMiniCardInterface) => {
   return (
     <div
@@ -20,9 +20,9 @@ const CardGrowthMiniCard = ({
           `flex flex-row font-semibold text-sm items-center justify-center', ${growthPositive ? "text-blue-700" : "text-red-500"}`
         )}
       >
-        <MoveUpRight size={16} strokeWidth={2} /> &nbsp;
-        {percent}
-        <span className="pl-[0.25px] font-bold">%</span>
+        {growthPositive ? <MoveUpRight size={16} strokeWidth={2} /> : <MoveDownRight size={16} strokeWidth={2} /> }<span className="pl-0.5 select-none">
+        {percentageChange}
+        <span className="pl-[0.25px] font-bold">%</span></span>
       </p>
     </div>
   );

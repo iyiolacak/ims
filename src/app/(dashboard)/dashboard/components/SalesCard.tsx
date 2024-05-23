@@ -16,7 +16,7 @@ interface CardProps {
   illustration: string;
   icon?: any;
 }
-const Card2 = () => {
+const SalesCard = () => {
   return (
     <div className="relative z-20 overflow-hidden border bg-white shadow-sm rounded-2xl w-[24rem] h-80 flex flex-col">
       <div className="flex flex-col h-64 justify-start p-6">
@@ -38,4 +38,4 @@ const Card2 = () => {
   );
 };
 
-export default Card2;
+export default SalesCard;

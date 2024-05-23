@@ -54,12 +54,14 @@ const UserMenuButton = () => {
 
   return (
     <div className="h-[160px]">
-      <div className="flex w-full px-2 py-3 bg-white border rounded-xl shadow-sm">
+      <div className="flex w-full px-2 py-2 bg-white border rounded-xl shadow-sm">
         <div className="flex flex-col w-full">
+          <div className="pb-2">
+
           <button
-            className="flex items-center space-x-2 p-2"
+            className="flex items-center space-x-2 px-2"
             onClick={handleProfileClick}
-          >
+            >
             <Avatar className="size-10 rounded-xl">
               {user.imageUrl ? (
                 <AvatarImage src={user.imageUrl} alt="User's profile image" />
@@ -76,9 +78,10 @@ const UserMenuButton = () => {
               </p>
             </div>
           </button>
-          <Separator className="my-3" orientation="horizontal" />
+              </div>
+          <Separator className="" orientation="horizontal" />
           <Input
-            className="w-full bg-slate-50 border-0 px-2 h-12 placeholder:text-foreground-muted/50"
+            className="w-full bg-slate-50 border-0 px-2 mt-2 h-12 placeholder:text-foreground-muted/50"
             placeholder="Search in sidebar..."
           />
         </div>
