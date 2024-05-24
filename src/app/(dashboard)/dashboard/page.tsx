@@ -2,10 +2,13 @@ import React from "react";
 import IngredientForm from "./components/addIngredientForm";
 import WelcomeSection from "./components/WelcomeSection";
 import Card from "./components/Card";
-import TableComponent from "./components/TableComponent";
+import DynamicTable from "./components/TablePublished";
 import Card2 from "./components/DynamicCard";
 import RevenueCard from "./components/DynamicCard";
 import DynamicCard from "./components/DynamicCard";
+import AddProductButton from "./components/AddProductButton";
+import { Button } from "@/components/ui/button";
+import TableComponent from "./components/TableComponent";
 
 const revenueData = [
   {
@@ -21,7 +24,7 @@ const revenueData = [
 export const salesData = [
   {
     productName: "iPhone 15",
-    sold: 18,
+    sold: 1597,
   },
   {
     productName: "Macbook M4",
@@ -33,7 +36,10 @@ const Dashboard = () => {
   return (
     <div className="">
       <div>
+        <div className="flex flex-row justify-between">
         <WelcomeSection />
+        <AddProductButton className="mt-3"/>
+        </div>
         <div className="flex gap-1.5 *:shadow-sm">
           <Card
             title="December Report"
@@ -45,6 +51,8 @@ const Dashboard = () => {
             dataValue={287000} // Data comes as direct number as like "287000" rather than "287.000"
             dataValuePrefix="$"
             tags={revenueData}
+            growthPositive={true}
+            percentageChange={18.24}
           />
           <DynamicCard
             dataMonth="December"
@@ -52,13 +60,14 @@ const Dashboard = () => {
             dataValue={4.2} // Data comes formatted from the backend as like "4.2" rather than "4286"
             dataValueSuffix="k"
             tags={salesData}
+            growthPositive={false}
+            percentageChange={9.18}
+            
           />
         </div>
-        <div className="w-full">
-          <TableComponent />
+        <TableComponent/>
         </div>
       </div>
-    </div>
   );
 };
 

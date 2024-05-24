@@ -25,6 +25,8 @@ interface DynamicCardProps {
   dataValuePrefix?: string;
   dataValueSuffix?: string;
   unit?: string;
+  growthPositive: boolean
+  percentageChange: number
   tags: Tag[];
 }
 const DynamicCard: React.FC<DynamicCardProps> = ({
@@ -35,6 +37,8 @@ const DynamicCard: React.FC<DynamicCardProps> = ({
   dataValueSuffix,
   unit,
   tags,
+  growthPositive,
+  percentageChange,
 }) => {
   const formatDataValue = (value: string | number) => {
     if (typeof value === "number") {
@@ -74,8 +78,8 @@ const DynamicCard: React.FC<DynamicCardProps> = ({
         <RevenueChart />
         <div className="absolute bottom-0 left-0 w-full h-full pointer-events-none fade-effect"></div>
       </div>
-      <div className="flex flex-row justify-between items-end p-6 space-x-3">
-        <CardGrowthMiniCard growthPositive={true} percentageChange={26.72} />
+      <div className="flex px-6 py-3">
+        <CardGrowthMiniCard growthPositive={growthPositive} percentageChange={percentageChange} />
       </div>
     </div>
   );

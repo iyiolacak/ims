@@ -54,7 +54,7 @@ const sidebarData = [
   },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ className }: { className?: string }) => {
   const pathname = usePathname();
   const { isLoaded } = useUser();
   const [activeTop, setActiveTop] = useState(0);
@@ -73,7 +73,7 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <div className="min-w-[275px] min-h-full bg-background border-r overflow-hidden relative">
+    <div className={`hidden md:block min-w-[275px] min-h-full bg-background border-r overflow-hidden relative ${className}`}>
       <div>
         <div className="p-3 mt-2">
           <UserMenuButton />
