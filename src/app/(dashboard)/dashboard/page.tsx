@@ -1,13 +1,8 @@
 import React from "react";
-import IngredientForm from "./components/addIngredientForm";
 import WelcomeSection from "./components/WelcomeSection";
 import Card from "./components/Card";
-import DynamicTable from "./components/TablePublished";
-import Card2 from "./components/DynamicCard";
-import RevenueCard from "./components/DynamicCard";
 import DynamicCard from "./components/DynamicCard";
 import AddProductButton from "./components/AddProductButton";
-import { Button } from "@/components/ui/button";
 import TableComponent from "./components/TableComponent";
 
 const revenueData = [
@@ -37,8 +32,8 @@ const Dashboard = () => {
     <div className="">
       <div>
         <div className="flex flex-row justify-between">
-        <WelcomeSection />
-        <AddProductButton className="mt-3"/>
+          <WelcomeSection />
+          <AddProductButton className="mt-3" />
         </div>
         <div className="flex gap-1.5 *:shadow-sm">
           <Card
@@ -62,12 +57,11 @@ const Dashboard = () => {
             tags={salesData}
             growthPositive={false}
             percentageChange={9.18}
-            
           />
         </div>
-        <TableComponent/>
-        </div>
+        <TableComponent />
       </div>
+    </div>
   );
 };
 

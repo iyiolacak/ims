@@ -73,7 +73,7 @@ const Sidebar = ({ className }: { className?: string }) => {
   }, []);
 
   return (
-    <div className={`hidden md:block min-w-[275px] min-h-full bg-background border-r overflow-hidden relative ${className}`}>
+    <div className={`hidden md:block sticky top-0 min-w-[275px] min-h-full bg-background border-r overflow-hidden ${className}`}>
       <div>
         <div className="p-3 mt-2">
           <UserMenuButton />

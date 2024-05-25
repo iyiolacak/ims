@@ -1,41 +1,34 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
-import DynamicTable from "./TablePublished";
-import TableDraft from "./TableDraft";
+import DynamicTable from "./DynamicTable";
 import clsx from "clsx";
 import {
-  List,
-  ListChecks,
-  ListXIcon,
   Package2Icon,
-  PackageOpen,
   Pencil,
-  PencilLine,
 } from "lucide-react";
 import { publishedData, publishedColumns, draftData } from "./tableData";
 export function formatProductDate(dateStr: string) {
-    const currentYear = new Date().getFullYear();
-    const dateObj = new Date(dateStr);
-  
-    // const dateStr = "2024-08-19"; // example date format received from the backend.
-  
-    const day = dateObj.getDate();
-    const month = dateObj.toLocaleString("default", { month: "long" });
-    const year = dateObj.getFullYear();
-  
-    let formattedDate;
-    if (year === currentYear) {
-      formattedDate = `${day} ${month}`;
-    } else {
-      formattedDate = `${day} ${month} ${year}`;
-    } return formattedDate;
-    }
-interface Data {
+  const currentYear = new Date().getFullYear();
+  const dateObj = new Date(dateStr);
 
+  // const dateStr = "2024-08-19"; // example date format received from the backend.
+
+  const day = dateObj.getDate();
+  const month = dateObj.toLocaleString("default", { month: "long" });
+  const year = dateObj.getFullYear();
+
+  let formattedDate;
+  if (year === currentYear) {
+    formattedDate = `${day} ${month}`;
+  } else {
+    formattedDate = `${day} ${month} ${year}`;
+  }
+  return formattedDate;
 }
+interface Data {}
 interface DynamicTableProps {
-    data: Data[]
+  data: Data[];
 }
 const TableComponent = () => {
   const [isPublished, setIsPublished] = useState("published");
@@ -48,9 +41,6 @@ const TableComponent = () => {
 
   return (
     <div className="bg-white border rounded-2xl my-4 shadow-sm pb-4">
-        <p>
-            formatlı date: {formatProductDate("2021-08-19")}
-        </p>
       <div className="flex items-center p-1 *:rounded-full">
         <Button
           className={clsx(
@@ -83,7 +73,7 @@ const TableComponent = () => {
           Draft
         </Button>
       </div>
-      <div className="transition-all">
+      <div className="flex items-center justify-center transition-all">
         <DynamicTable columns={columns} data={data} />
       </div>
     </div>
