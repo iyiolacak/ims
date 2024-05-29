@@ -29,7 +29,7 @@ export const salesData = [
 
 const Dashboard = () => {
   return (
-    <div className="">
+    <div className="w-full">
       <div>
         <div className="flex flex-row justify-between">
           <WelcomeSection />

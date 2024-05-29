@@ -25,7 +25,7 @@ const WelcomeSection = ({ title, description }: WelcomeSectionProps) => {
           <h1 className="scroll-m-20 text-3xl font-bold tracking-tight">
             {title}
           </h1>
-          <p className="leading-7 mt-2 text-slate-400">{description} </p>
+          {description && <p className="leading-7 mt-2 text-slate-400">{description} </p>}
         </div>
         )
       ) : (

@@ -1,6 +1,8 @@
 "use client";
+import React, { useState, useEffect, useCallback, useRef, MutableRefObject } from "react";
 import Link from "next/link";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartColumn,
@@ -14,98 +16,99 @@ import {
   faQuestionCircle,
   faReceipt,
 } from "@fortawesome/free-solid-svg-icons";
-import { usePathname } from "next/navigation";
-import clsx from "clsx";
-import UserMenuButton from "@/components/ui/UserMenuButton";
 import { useUser } from "@clerk/clerk-react";
-
-const sidebarData = [
-  {
-    items: [
-      { name: "Dashboard", icon: faChartColumn, route: "/dashboard" },
-      { name: "Analytics", icon: faDashboard, route: "/dashboard/analytics" },
-    ],
-  },
-  {
-    section: "Account",
-    items: [
-      { name: "Account", icon: faUser, route: "/dashboard/account" },
-      {
-        name: "My Publishing",
-        icon: faBook,
-        route: "/dashboard/my-publishing",
-      },
-      { name: "Products", icon: faBox, route: "/dashboard/products" },
-      { name: "Orders", icon: faShoppingCart, route: "/dashboard/orders" },
-      { name: "More", icon: faEllipsisH, route: "/dashboard/more" },
-    ],
-  },
-  {
-    section: "Other Menu",
-    items: [
-      { name: "Setting", icon: faCog, route: "/dashboard/setting" },
-      { name: "Help", icon: faQuestionCircle, route: "/dashboard/help" },
-      {
-        name: "Subscriptions",
-        icon: faReceipt,
-        route: "/dashboard/subscriptions",
-      },
-    ],
-  },
-];
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import UserMenuButton from "@/components/ui/UserMenuButton";
+import sidebarData from "@/app/sidebarData";
 
 const Sidebar = ({ className }: { className?: string }) => {
   const pathname = usePathname();
   const { isLoaded } = useUser();
   const [activeTop, setActiveTop] = useState(0);
-  const activeRef = useRef<HTMLAnchorElement>(null);
+  const activeRef = useRef<HTMLAnchorElement | null>(null) as MutableRefObject<HTMLAnchorElement | null>;
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const setActiveRef = useCallback((node: HTMLAnchorElement) => {
+    if (node !== null) {
+      activeRef.current = node;
+      setActiveTop(node.offsetTop);
+    }
+  }, []);
 
   useEffect(() => {
     if (isLoaded && activeRef.current) {
       setActiveTop(activeRef.current.offsetTop);
     }
-  }, [pathname, isLoaded]);
-
-  const setActiveRef = useCallback((node: any) => {
-    if (node !== null) {
-      setActiveTop(node.offsetTop);
-    }
-  }, []);
+  }, [pathname, isLoaded, isOpen]);
 
   return (
-    <div className={`hidden md:block sticky top-0 min-w-[275px] min-h-full bg-background border-r overflow-hidden ${className}`}>
+    <div
+      className={clsx(
+        "hidden md:block sticky top-0 bg-background border-r transition-all overflow-hidden",
+        {
+          "min-w-[275px]": isOpen,
+          "min-w-[60px]": !isOpen,
+        },
+        className
+      )}
+    >
       <div>
-        <div className="p-3 mt-2">
-          <UserMenuButton />
+        <div className="flex justify-end my-1 mx-3">
+          <Button
+            className="hover:bg-white rounded-lg p-2"
+            variant={"ghost"}
+            onClick={toggleSidebar}
+          >
+            {isOpen ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}
+          </Button>
+        </div>
+        <div className="p-3">
+          <UserMenuButton isOpen={isOpen} />
         </div>
         {sidebarData.map((section, index) => (
           <div key={index}>
-            <div className="mt-2 mb-2 px-6 uppercase text-slate-400 text-xs font-md">
-              {section?.section}
-            </div>
+            {isOpen && (
+              <div className="mt-2 mb-2 px-6 uppercase text-slate-400 text-xs font-medium transition-opacity duration-300 ease-in-out">
+                {section.section}
+              </div>
+            )}
             {section.items.map((item, itemIndex) => (
               <Link
                 href={item.route}
                 key={itemIndex}
                 ref={pathname === item.route ? setActiveRef : null}
                 className={clsx(
-                  "relative flex items-center p-2.5 pl-4 space-x-4 transition-all ",
+                  "relative flex items-center p-2.5 transition-all w-full",
                   {
-                    "text-black hover:text-black": pathname === item.route,
-                    "text-slate-600 hover:text-slate-400":
+                    "pl-4 text-black hover:text-black": pathname === item.route,
+                    "pl-4 text-slate-600 hover:text-slate-400":
                       pathname !== item.route,
+                      "justify-center": !isOpen,
                   }
                 )}
-                style={{ paddingLeft: "16px" }} // Ensure the same padding on both active and inactive states
               >
                 <FontAwesomeIcon
                   icon={item.icon}
-                  className={clsx("size-4", {
+                  className={clsx("transition-all", {
                     "text-black hover:text-black": pathname === item.route,
                     "text-slate-400": pathname !== item.route,
+                    "size-5": !isOpen,
+                    "size-4 border-none p-0": isOpen,
                   })}
                 />
-                <p className="text-md font-medium">{item.name}</p>
+                <p
+                  className={clsx(
+                    "text-md font-medium ml-4 transition-opacity duration-300 ease-in-out",
+                    { "opacity-100": isOpen, "opacity-0 hidden": !isOpen }
+                  )}
+                >
+                  {item.name}
+                </p>
               </Link>
             ))}
           </div>

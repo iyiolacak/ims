@@ -5,10 +5,10 @@ import WelcomeSection from "./components/WelcomeSection";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="h-full">
-      <div className="h-full flex flex-row">
+    <div className="h-screen overflow-hidden flex flex-col">
+      <div className="flex flex-row flex-grow overflow-hidden">
         <Sidebar/>
-        <div className="p-6">{children}</div>
+        <div className="flex-grow p-6 overflow-auto">{children}</div>
       </div>
     </div>
   );
