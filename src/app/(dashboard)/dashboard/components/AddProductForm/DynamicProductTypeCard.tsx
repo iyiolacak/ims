@@ -1,6 +1,5 @@
 "use client";
 import clsx from "clsx";
-import { LucideProps } from "lucide-react";
 import React from "react";
 
 interface IDynamicProductCategoryCard {
@@ -8,6 +7,8 @@ interface IDynamicProductCategoryCard {
   categoryName: string;
   categoryVolume: number;
   categoryValue: string;
+  isSelected: boolean;
+  onSelect: (categoryValue: string) => void;
 }
 
 const DynamicProductTypeCard: React.FC<IDynamicProductCategoryCard> = ({
@@ -15,37 +16,47 @@ const DynamicProductTypeCard: React.FC<IDynamicProductCategoryCard> = ({
   categoryName,
   categoryVolume,
   categoryValue,
+  isSelected,
+  onSelect,
 }) => {
-  const [selectedValue, setSelectedValue] = React.useState(false);
-  const handleClick = (e: any) => {
-    setSelectedValue(!categoryValue);
-  }
-    return (
-      <button
-        onClick={handleClick}
-        className={clsx(
-          "flex shrink-0 w-56 h-36 bg-neutral-50 border-[1.5px] shadow-sm rounded-lg transition-all",
-          {
-            "hover:border-blue-300": true && !selectedValue,
-            "border-blue-500 hover:border-blue-500": selectedValue,
-          }
-        )}
-      >
-        <div className="flex flex-col h-full p-3 justify-between">
-          <div className="flex items-center justify-center size-10 bg-white border rounded-lg text-neutral-600">
-            {categoryIcon}
-          </div>
-          {/* category title */}
-          <div className="">
-            <h2 className="text-md font-semibold">{categoryName}</h2>
-            <p className="text-neutral-500 text-sm">
-              {categoryVolume.toLocaleString()} items
-            </p>
-          </div>
+  const handleClick = () => {
+    onSelect(categoryValue);
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      className={clsx(
+        "group flex shrink-0 w-56 h-36 bg-neutral-50 border-[1.5px] shadow-sm rounded-lg transition-all",
+        {
+          "hover:border-blue-300 hover:bg-white": !isSelected,
+          "border-blue-500 hover:border-blue-600 bg-blue-50/20": isSelected,
+        }
+      )}
+    >
+      <div className="flex flex-col h-full p-3 justify-between">
+        <div className={clsx("flex items-center justify-center size-10 bg-white border rounded-lg transition-all",
+            {
+                "text-blue-700": isSelected,
+                "text-neutral-600": !isSelected,
+            }
+        )}>
+          {categoryIcon}
         </div>
-      </button>
-    );
-;
+        <div className="">
+          <h2 className={clsx("text-md text-start font-semibold transition-colors",
+            {
+                "group-hover:text-neutral-600 text-neutral-800": !isSelected,
+                "text-blue-700": isSelected
+            }
+          )}>{categoryName}</h2>
+          <p className="text-start text-neutral-500 text-sm">
+            {categoryVolume.toLocaleString()} items
+          </p>
+        </div>
+      </div>
+    </button>
+  );
 };
 
 export default DynamicProductTypeCard;

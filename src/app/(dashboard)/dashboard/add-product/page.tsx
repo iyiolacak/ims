@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import ProductImageSection from "../components/AddProductForm/ProductImageSection";
 import WelcomeSection from "../components/WelcomeSection";
@@ -7,18 +8,11 @@ import ProductStatusSection from "../components/AddProductForm/ProductStatusSect
 import ProductTypeSection from "../components/AddProductForm/ProductTypeSection";
 
 const AddProduct = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  
-  const handleSelectCategory = (categoryValue: string) => {
-    setSelectedCategories((prevSelected) =>
-      prevSelected.includes(categoryValue)
-        ? prevSelected.filter((value) => value !== categoryValue)
-        : [...prevSelected, categoryValue]
-    );
-  };
+
   return (
     <>
-      <div className="w-full">
+    <div className="flex flex-col flex-grow overflow-hidden">
+      <div className="">
         <h1 className="scroll-m-20 text-3xl font-bold tracking-tight pb-4">
           Create a New Product
         </h1>
@@ -34,6 +28,7 @@ const AddProduct = () => {
           <ProductTypeSection />
         </div>
       </div>
+    </div>
     </>
   );
 };

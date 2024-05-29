@@ -6,13 +6,15 @@ import React from "react";
 interface CardProps {
   title: string;
   description: string;
+  className?: string;
 }
 const Card = ({
   title,
   description,
+  className
 }: CardProps) => {
   return (
-    <div className="flex relative overflow-hidden border bg-white shadow-sm rounded-2xl w-[24rem] h-80 flex-col">
+    <div className={`flex relative overflow-hidden border bg-white shadow-sm rounded-2xl w-full h-80 flex-col ${className}`}>
       <div className="absolute z-[1] top-4 left-4 size-14 rounded-full bg-white shadow-md shadow-blue-700/20">
         <RocketIcon className="size-7 mx-auto h-full text-blue-700 "/>
       </div>

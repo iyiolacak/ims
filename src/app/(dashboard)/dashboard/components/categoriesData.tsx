@@ -52,6 +52,5 @@ import {
       categoryValue: "wearables",
     },
   ];
-  
-  export default categories;
+  export const categoriesEmpty = []
   

@@ -84,9 +84,9 @@ const UserMenuButton: React.FC<IUserMenuButton> = ({ isOpen }) => {
           </div>
         </div>
       ) : (
-        <div>
+        <div className="w-full flex justify-center">
           <button
-            className="flex items-center space-x-2 px-2"
+            className="flex items-center justify-center space-x-2 px-2"
             onClick={handleProfileClick}
           >
             <Avatar className="size-10 rounded-xl">

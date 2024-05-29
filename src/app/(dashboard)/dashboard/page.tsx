@@ -1,9 +1,12 @@
+"use client";
 import React from "react";
 import WelcomeSection from "./components/WelcomeSection";
 import Card from "./components/Card";
 import DynamicCard from "./components/DynamicCard";
 import AddProductButton from "./components/AddProductButton";
 import TableComponent from "./components/TableComponent";
+import clsx from "clsx";
+import { motion } from "framer-motion";
 
 const revenueData = [
   {
@@ -28,17 +31,33 @@ export const salesData = [
 ];
 
 const Dashboard = () => {
+  const [isHidden, setIsHidden] = React.useState<boolean>(true);
+
   return (
     <div className="w-full">
       <div>
-        <div className="flex flex-row justify-between">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-row justify-between"
+        >
           <WelcomeSection />
           <AddProductButton className="mt-3" />
-        </div>
-        <div className="flex gap-1.5 *:shadow-sm">
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="flex flex-grow gap-1.5 shadow-sm"
+        >
           <Card
             title="December Report"
             description="Retrieve December report, analyze key data for informed strategic decisions."
+            className={clsx({
+              block: isHidden,
+              hidden: !isHidden,
+            })}
           />
           <DynamicCard
             dataMonth="December"
@@ -48,6 +67,10 @@ const Dashboard = () => {
             tags={revenueData}
             growthPositive={true}
             percentageChange={18.24}
+            className={clsx({
+              block: isHidden,
+              hidden: !isHidden,
+            })}
           />
           <DynamicCard
             dataMonth="December"
@@ -57,9 +80,19 @@ const Dashboard = () => {
             tags={salesData}
             growthPositive={false}
             percentageChange={9.18}
+            className={clsx({
+              block: isHidden,
+              hidden: !isHidden,
+            })}
           />
-        </div>
-        <TableComponent />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <TableComponent />
+        </motion.div>
       </div>
     </div>
   );

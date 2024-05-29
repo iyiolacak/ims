@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, useEffect, useCallback, useRef, MutableRefObject } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  MutableRefObject,
+} from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
@@ -21,12 +27,15 @@ import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserMenuButton from "@/components/ui/UserMenuButton";
 import sidebarData from "@/app/sidebarData";
+import { motion } from "framer-motion";
 
 const Sidebar = ({ className }: { className?: string }) => {
   const pathname = usePathname();
   const { isLoaded } = useUser();
   const [activeTop, setActiveTop] = useState(0);
-  const activeRef = useRef<HTMLAnchorElement | null>(null) as MutableRefObject<HTMLAnchorElement | null>;
+  const activeRef = useRef<HTMLAnchorElement | null>(
+    null
+  ) as MutableRefObject<HTMLAnchorElement | null>;
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -47,13 +56,12 @@ const Sidebar = ({ className }: { className?: string }) => {
   }, [pathname, isLoaded, isOpen]);
 
   return (
-    <div
+    <motion.div
+      initial={{ width: "60px" }}
+      animate={{ width: isOpen ? "275px" : "60px" }}
+      transition={{ duration: 0.2 }}
       className={clsx(
-        "hidden md:block sticky top-0 bg-background border-r transition-all overflow-hidden",
-        {
-          "min-w-[275px]": isOpen,
-          "min-w-[60px]": !isOpen,
-        },
+        "hidden md:block sticky top-0 bg-background shrink-0 border-r overflow-hidden",
         className
       )}
     >
@@ -73,9 +81,14 @@ const Sidebar = ({ className }: { className?: string }) => {
         {sidebarData.map((section, index) => (
           <div key={index}>
             {isOpen && (
-              <div className="mt-2 mb-2 px-6 uppercase text-slate-400 text-xs font-medium transition-opacity duration-300 ease-in-out">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="mt-2 mb-2 px-6 uppercase text-slate-400 text-xs font-medium"
+              >
                 {section.section}
-              </div>
+              </motion.div>
             )}
             {section.items.map((item, itemIndex) => (
               <Link
@@ -88,40 +101,42 @@ const Sidebar = ({ className }: { className?: string }) => {
                     "pl-4 text-black hover:text-black": pathname === item.route,
                     "pl-4 text-slate-600 hover:text-slate-400":
                       pathname !== item.route,
-                      "justify-center": !isOpen,
+                    "justify-center": !isOpen,
                   }
                 )}
               >
                 <FontAwesomeIcon
                   icon={item.icon}
-                  className={clsx("transition-all", {
+                  className={clsx({
                     "text-black hover:text-black": pathname === item.route,
                     "text-slate-400": pathname !== item.route,
-                    "size-5": !isOpen,
-                    "size-4 border-none p-0": isOpen,
                   })}
                 />
-                <p
-                  className={clsx(
-                    "text-md font-medium ml-4 transition-opacity duration-300 ease-in-out",
-                    { "opacity-100": isOpen, "opacity-0 hidden": !isOpen }
-                  )}
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isOpen ? 1 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={clsx("text-md font-medium ml-4", {
+                    hidden: !isOpen,
+                  })}
                 >
                   {item.name}
-                </p>
+                </motion.p>
               </Link>
             ))}
           </div>
         ))}
       </div>
-      <span
-        className="absolute left-0 w-[2px] bg-black transition-all duration-300"
-        style={{
+      <motion.span
+        className="absolute left-0 w-[2px] bg-black"
+        initial={{ top: 0, height: "0px" }}
+        animate={{
           top: isLoaded ? activeTop : 0,
-          height: !isLoaded ? "0px" : "44px",
-        }} // Adjust height as needed
-      ></span>
-    </div>
+          height: isLoaded ? "44px" : "0px",
+        }}
+        transition={{ duration: 0.2 }}
+      ></motion.span>
+    </motion.div>
   );
 };
 

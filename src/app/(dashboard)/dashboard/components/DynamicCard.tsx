@@ -24,7 +24,7 @@ interface DynamicCardProps {
   dataValue: string | number;
   dataValuePrefix?: string;
   dataValueSuffix?: string;
-  unit?: string;
+  className?: string;
   growthPositive: boolean
   percentageChange: number
   tags: Tag[];
@@ -35,7 +35,7 @@ const DynamicCard: React.FC<DynamicCardProps> = ({
   dataMonth,
   dataValuePrefix,
   dataValueSuffix,
-  unit,
+  className,
   tags,
   growthPositive,
   percentageChange,
@@ -48,7 +48,7 @@ const DynamicCard: React.FC<DynamicCardProps> = ({
   };
   const formattedDataValue = formatDataValue(dataValue);
   return (
-    <div className="relative z-20 overflow-hidden border bg-white shadow-sm rounded-2xl w-[24rem] h-80 flex flex-col">
+    <div className={`relative z-20 overflow-hidden border bg-white shadow-sm rounded-2xl w-full h-80 flex flex-col ${className}`}>
       <div className="flex flex-row">
         <div className="flex flex-col h-64 justify-start p-6">
           <DynamicTitle dataTitle={dataTitle} dataMonth={dataMonth} />
