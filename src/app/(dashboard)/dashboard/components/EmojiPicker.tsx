@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import clsx from "clsx";
-import { Smile } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { Smile, Shuffle } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { SearchIndex } from "emoji-mart";
+import { SearchIndex, init } from "emoji-mart";
+import { CircularLoading } from "respinner";
 
 interface IEmojiPicker {
   onSelect: (emoji: string) => void;
@@ -14,10 +15,9 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ onSelect }) => {
   const [isPickerOpened, setIsPickerOpened] = useState(false);
   const [emojiData, setEmojiData] = useState<any>(null);
   const [emojis, setEmojis] = useState<string[]>([]);
-  const [emojiSearch, setEmojiSearch] = useState<string>("");
   const [visibleEmojis, setVisibleEmojis] = useState<string[]>([]);
+  const [searchValue, setSearchValue] = useState("");
   const [hasMore, setHasMore] = useState(true);
-  const inputRef = useRef<HTMLInputElement>(null);
   const ITEMS_PER_PAGE = 100;
 
   useEffect(() => {
@@ -32,13 +32,31 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ onSelect }) => {
       const results = allEmojis.map((emoji: any) => emoji.skins[0].native);
       setEmojis(results);
       setVisibleEmojis(results.slice(0, ITEMS_PER_PAGE));
+      init({ data });
     };
 
     fetchData();
   }, []);
 
-  const inputValue = inputRef.current?.value;
+  useEffect(() => {
+    if (!emojiData) return;
 
+    const fetchSearchResults = async () => {
+      if (searchValue) {
+        const searchResult = await SearchIndex.search(searchValue);
+        const results = searchResult.map((emoji: any) => emoji.skins[0].native);
+        setEmojis(results);
+        setVisibleEmojis(results.slice(0, ITEMS_PER_PAGE));
+      } else {
+        const allEmojis = Object.values(emojiData.emojis);
+        const results = allEmojis.map((emoji: any) => emoji.skins[0].native);
+        setEmojis(results);
+        setVisibleEmojis(results.slice(0, ITEMS_PER_PAGE));
+      }
+    };
+
+    fetchSearchResults();
+  }, [searchValue, emojiData]);
 
   const loadMoreEmojis = () => {
     if (visibleEmojis.length >= emojis.length) {
@@ -64,43 +82,66 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ onSelect }) => {
     setIsPickerOpened(false);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+    console.log(e.target.value);
+  };
+
   if (!emojiData) return null; // Return null if emoji data is not loaded yet
 
   return (
-    <div className="">
+    <div className="relative inline-block">
       <Button
         onClick={handleClick}
         variant={"invisible"}
         className={clsx(
-          "items-center text-neutral-600 hover:bg-neutral-200/50 hover:text-neutral-700",
+          "relative items-center text-neutral-600 hover:bg-neutral-200/50 hover:text-neutral-700",
           { "bg-neutral-200/50 text-neutral-700": isPickerOpened }
         )}
       >
         <Smile className="mr-1" size={16} /> Category Icon
       </Button>
       {isPickerOpened && (
-        <div className="absolute w-[400px] left-[0px] right-[0px] z-50 bg-white border rounded-lg shadow-md">
+        <div className="absolute w-[400px] left-0 mt-2 z-50 bg-white border rounded-lg shadow-md">
           <div className="relative">
-            <div className="p-2 border-b">
-              <Input placeholder="Search emojis..." ref={inputRef} />
+            <div className="flex flex-row p-2 border-b">
+              <Input
+                placeholder="Search emojis..."
+                value={searchValue}
+                onChange={handleSearchChange}
+                className="border-none ring-0 ring-offset-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium"
+              />
+              <Button variant={"ghost"} className="">
+                <Shuffle size={16} />
+              </Button>
             </div>
             <InfiniteScroll
               dataLength={visibleEmojis.length}
               next={loadMoreEmojis}
               hasMore={hasMore}
-              loader={<h4>Loading...</h4>} // search fonksiyonu çalışıyor. Input değeri search fonksiyonuna gönderilecek ve sonuçlar `results` değişkenidir yani `results` maplenecek. results array olarak gelir.
+              loader={
+                <div className="flex items-center justify-center h-full">
+                  <CircularLoading size={40} duration={1} stroke="#4197ff" />
+                </div>
+              }
               height={300}
-              endMessage={<p style={{ textAlign: "center" }}>No more emojis</p>}
+              endMessage={
+                <div className="flex justify-center items-center text-sm">
+                  <p className="text-neutral-600">
+                    You&apos;ve reached the end of the list.
+                  </p>
+                </div>
+              }
             >
-              <div className="flex flex-wrap p-2">
+              <div className="grid grid-cols-9 p-2">
                 {visibleEmojis.map((emoji, index) => (
                   <span
                     key={index}
                     style={{
                       fontSize: "24px",
-                      margin: "5px",
                       cursor: "pointer",
                     }}
+                    className="text-2xl cursor-pointer hover:bg-slate-200 transition-colors duration-75 rounded-lg items-center justify-center text-center p-1"
                     onClick={() => handleSelect(emoji)}
                   >
                     {emoji}

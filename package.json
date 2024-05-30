@@ -42,6 +42,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-transition-group": "^4.4.5",
     "recharts": "^2.12.7",
+    "respinner": "^4.0.1",
     "svix-react": "^1.11.0",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.3.0",
