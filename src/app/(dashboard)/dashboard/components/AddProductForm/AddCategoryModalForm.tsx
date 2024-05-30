@@ -26,7 +26,7 @@ const AddCategoryModalForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="">
       <div>
         <EmojiPicker onSelect={(emoji: any) => setValue('emoji', emoji)}/>
       </div>
@@ -39,7 +39,7 @@ const AddCategoryModalForm: React.FC = () => {
           ref={inputRef}
         />
       </div>
-      <Button type="submit">Create</Button>
+      <Button type="submit" className='mt-5' variant={"ghost"}>Create</Button>
     </form>
   );
 };
