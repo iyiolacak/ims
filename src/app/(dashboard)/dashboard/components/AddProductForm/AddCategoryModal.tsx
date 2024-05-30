@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import AddCategoryModalForm from "./AddCategoryModalForm";
 
 interface IAddCategoryModal {
   children: React.ReactNode;
@@ -19,9 +20,8 @@ const AddCategoryModal = ({ children }: IAddCategoryModal) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add a New Category</DialogTitle>
-          <DialogDescription>New category</DialogDescription>
         </DialogHeader>
-        {/* Add your form or content here to handle adding a new category */}
+        <AddCategoryModalForm/>
       </DialogContent>
     </Dialog>
   );

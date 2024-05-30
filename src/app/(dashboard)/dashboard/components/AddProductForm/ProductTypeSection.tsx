@@ -112,11 +112,6 @@ const ProductTypeSection = () => {
           </AnimatePresence>
         )}
       </div>
-      <AddCategoryModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAddCategory={handleAddCategory}
-      />
     </FormCard>
   );
 };
