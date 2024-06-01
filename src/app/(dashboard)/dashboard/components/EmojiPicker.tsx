@@ -8,18 +8,19 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { SearchIndex, init } from "emoji-mart";
 import { CircularLoading } from "respinner";
 import { motion, AnimatePresence } from "framer-motion";
+import useClickAway from "@/hooks/useClickAway";
+import { useFormContext } from "react-hook-form";
 
 interface IEmojiPicker {
-  onSelect: (emoji: string) => void;
+  name: string; // Name of the form field
 }
 
-const EmojiPicker: React.FC<IEmojiPicker> = ({ onSelect }) => {
+const EmojiPicker: React.FC<IEmojiPicker> = ({ name }) => {
   const [isPickerOpened, setIsPickerOpened] = useState(false);
   const [emojiData, setEmojiData] = useState<{
     emojis: Record<string, any>;
   } | null>(null);
   const [emojis, setEmojis] = useState<string[]>([]);
-  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [visibleEmojis, setVisibleEmojis] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [hasMore, setHasMore] = useState(true);
@@ -27,6 +28,9 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ onSelect }) => {
   const pickerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const ITEMS_PER_PAGE = 63;
+
+  const { setValue, watch } = useFormContext(); // Use useFormContext
+  const selectedEmoji = watch(name); // Watch the form state
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,31 +88,11 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ onSelect }) => {
     fetchSearchResults();
   }, [searchValue, emojiData]);
 
-  useEffect(() => {
-    const handleClicksOutside = (event: MouseEvent) => {
-      if (
-        pickerRef.current &&
-        !pickerRef.current.contains(event.target as Node)
-      ) {
-        setIsPickerOpened(false);
-      }
-    };
+  const closePicker = () => {
+    setIsPickerOpened(false);
+  };
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        setIsPickerOpened(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClicksOutside);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClicksOutside);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+  useClickAway(pickerRef, closePicker);
 
   const loadMoreEmojis = () => {
     if (visibleEmojis.length >= emojis.length) {
@@ -129,17 +113,14 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ onSelect }) => {
 
     if (!selectedEmoji) {
       // If there is no selected emoji, select a random emoji first
-      setSelectedEmoji(handleRandomEmoji());
+      handleSelect(handleRandomEmoji());
     }
     // Toggle the picker
     setIsPickerOpened(!isPickerOpened);
-
-    return setIsPickerOpened(true);
   };
 
   const handleSelect = (emoji: string) => {
-    setSelectedEmoji(emoji);
-    onSelect(emoji);
+    setValue(name, emoji); // Update the form state with the selected emoji
     setIsPickerOpened(false);
   };
 
@@ -170,8 +151,8 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ onSelect }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-start h-full ml-3 py-2">
-        <CircularLoading size={20} duration={1} stroke="#888888" />
+      <div className="flex items-center justify-center size-20">
+        <CircularLoading size={30} duration={1} stroke="#888888" />
       </div>
     );
   }
@@ -231,7 +212,7 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ onSelect }) => {
                 {/* shuffle button */}
                 <Button
                   variant={"ghost"}
-                  onClick={() => setSelectedEmoji(handleRandomEmoji())}
+                  onClick={() => handleSelect(handleRandomEmoji())}
                   disabled={emojis.length <= 0}
                 >
                   <Shuffle size={16} />

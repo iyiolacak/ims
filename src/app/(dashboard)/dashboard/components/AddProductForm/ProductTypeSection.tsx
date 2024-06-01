@@ -8,6 +8,7 @@ import styles from "@/app/ScrollContainer.module.css";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import AddCategoryModal from "./AddCategoryModal";
+import { useRouter } from "next/navigation";
 
 // Define the category type
 type Category = {
@@ -19,16 +20,17 @@ type Category = {
 
 const ProductTypeSection = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]); // Initialize with an empty array
+  const router = useRouter();
 
+  
   const handleSelectCategory = (categoryValue: string) => {
     setSelectedCategories((prevSelected) =>
       prevSelected.includes(categoryValue)
-        ? prevSelected.filter((value) => value !== categoryValue)
-        : [...prevSelected, categoryValue]
-    );
-  };
+    ? prevSelected.filter((value) => value !== categoryValue)
+    : [...prevSelected, categoryValue]
+  );
+};
 
   const handleAddCategory = (newCategory: Category) => {
     setCategories((prevCategories) => [...prevCategories, newCategory]);
@@ -45,31 +47,32 @@ const ProductTypeSection = () => {
   ];
 
   const handleClickAddCategory = () => {
-    setIsModalOpen(true);
+    const params = new URLSearchParams(window.location.search);
+    params.set("create-category", "");
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    router.replace(newUrl);
   };
+
 
   const AddCategoryButton: React.FC = () => {
     return (
-      <AddCategoryModal>
         <Button
-          className="flex text-blue-700 text-md font-medium -m-2"
-          variant={"invisible"}
-          onClick={handleClickAddCategory}
+        className="flex text-blue-700 text-md font-medium -m-2"
+        variant={"invisible"}
+        onClick={handleClickAddCategory}
         >
           <Plus size={16} className="mr-1" />
           Add Category
         </Button>
-      </AddCategoryModal>
     );
   };
-
+  
   return (
     <FormCard title="Product Type" actionComponent={<AddCategoryButton />}>
       <div
         className={`flex flex-row gap-x-2 overflow-x-auto whitespace-nowrap ${styles.scrollContainer}`}
       >
         {orderedCategories.length === 0 ? (
-          <AddCategoryModal>
             <button
               onClick={handleClickAddCategory}
               className="group flex shrink-0 w-56 h-36 bg-white hover:bg-neutral-50 border-2 border-dashed border-spacing-10 shadow-sm rounded-lg transition-all"
@@ -85,7 +88,6 @@ const ProductTypeSection = () => {
                 </div>
               </div>
             </button>
-          </AddCategoryModal>
         ) : (
           <AnimatePresence>
             {orderedCategories.map((category, index) => (
