@@ -3,7 +3,7 @@ import clsx from "clsx";
 import React from "react";
 import { Id } from "@/../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, PencilLine, Trash } from "lucide-react";
+import { Folder, FolderArchiveIcon, MoreHorizontal, PencilLine, Trash } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface IDynamicProductCategoryCard {
@@ -14,6 +14,7 @@ interface IDynamicProductCategoryCard {
   isSelected: boolean;
   onSelect: (categoryId: Id<"categories">) => void;
   onDelete: (categoryId: Id<"categories">) => void; // Add onDelete prop
+  isSubmitting: boolean; // Add submission status prop
 }
 
 const DynamicProductTypeCard: React.FC<IDynamicProductCategoryCard> = ({
@@ -24,6 +25,7 @@ const DynamicProductTypeCard: React.FC<IDynamicProductCategoryCard> = ({
   isSelected,
   onSelect,
   onDelete, // Destructure onDelete
+  isSubmitting,
 }) => {
   const handleClick = () => {
     onSelect(categoryId);
@@ -38,7 +40,7 @@ const DynamicProductTypeCard: React.FC<IDynamicProductCategoryCard> = ({
     <div
       onClick={handleClick}
       className={clsx(
-        "group flex shrink-0 w-96 h-36 bg-neutral-500 shadow-sm rounded-lg transition-all border-[1.5px]",
+        "group flex cursor-pointer shrink-0 w-56 h-36 bg-neutral-50 shadow-sm rounded-lg transition-all border-[1.5px]",
         {
           "hover:border-blue-300 hover:bg-white": !isSelected,
           "border-blue-500 hover:border-blue-600 bg-blue-50/20": isSelected,
@@ -53,7 +55,7 @@ const DynamicProductTypeCard: React.FC<IDynamicProductCategoryCard> = ({
               "text-neutral-600": !isSelected,
             }
           )}>
-            {emoji}
+            {emoji ? emoji : <Folder/>}
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

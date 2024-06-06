@@ -44,6 +44,7 @@
     "react-flip-move": "^3.0.5",
     "react-hook-form": "^7.51.5",
     "react-infinite-scroll-component": "^6.1.0",
+    "react-toastify": "^10.0.5",
     "react-transition-group": "^4.4.5",
     "recharts": "^2.12.7",
     "respinner": "^4.0.1",

@@ -10,18 +10,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChartColumn,
-  faDashboard,
-  faUser,
-  faBook,
-  faBox,
-  faShoppingCart,
-  faEllipsisH,
-  faCog,
-  faQuestionCircle,
-  faReceipt,
-} from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "@clerk/clerk-react";
 import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
