@@ -84,7 +84,7 @@ const Sidebar = ({ className }: { className?: string }) => {
                 key={itemIndex}
                 ref={pathname === item.route ? setActiveRef : null}
                 className={clsx(
-                  "relative flex items-center p-2.5 transition-all w-full",
+                  "relative flex items-center pl-4 p-2.5 transition-all w-full",
                   {
                     "pl-4 text-black hover:text-black": pathname === item.route,
                     "pl-4 text-slate-600 hover:text-slate-400":

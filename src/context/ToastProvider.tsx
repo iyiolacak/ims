@@ -1,3 +1,4 @@
+"use client";
 import React, { createContext, useContext } from 'react'
 import { ToastContainer, toast, ToastContainerProps } from 'react-toastify'
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormCard from "./FormCard";
 import DynamicProductTypeCard from "./DynamicProductTypeCard";
 import { FileQuestion, Plus } from "lucide-react";
@@ -7,58 +7,34 @@ import styles from "@/app/ScrollContainer.module.css";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useQuery, useMutation } from 'convex/react'
-import { api } from '@/../convex/_generated/api'
-import { useUserId } from '@/context/UserContext'
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/../convex/_generated/api";
+import { useUserId } from "@/context/UserContext";
 import { Id } from "@/../convex/_generated/dataModel";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Define the category type
-type Category = {
-  categoryName: string;
-  emoji?: string;
-  categoryId: Id<"categories">;
-  // categoryVolume: number;
-};
+interface ProductCategoriesSectionProps {
+  onSelectCategories: (selectedCategories: Id<"categories">[]) => void;
+}
 
-const ProductTypeSection = () => {
-  const [selectedCategories, setSelectedCategories] = useState<Id<"categories">[]>([]);
+const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> = ({
+  onSelectCategories,
+}) => {
+  const [selectedCategories, setSelectedCategories] = useState<
+    Id<"categories">[]
+  >([]);
   const router = useRouter();
   const userId = useUserId();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const fetchedCategories = useQuery(api.categories.getCategoriesByUser, userId ? { userId } : 'skip');
+  const fetchedCategories = useQuery(
+    api.categories.getCategoriesByUser,
+    userId ? { userId } : "skip",
+  );
+
+  useEffect(() => {
+    onSelectCategories(selectedCategories)
+  }, [selectedCategories, onSelectCategories])
   const removeCategory = useMutation(api.categories.removeCategory);
-
-  if (!fetchedCategories || !userId) return <div>Loading...</div>;
-
-  console.log(fetchedCategories);
-
-  const handleSelectCategory = (categoryId: Id<"categories">) => {
-    setSelectedCategories((prevSelected) =>
-      prevSelected.includes(categoryId)
-        ? prevSelected.filter((id) => id !== categoryId)
-        : [...prevSelected, categoryId]
-    );
-  };
-
-  const handleDeleteCategory = async (categoryId: Id<"categories">) => {
-    console.log("handleDeleteCategory called with categoryId:", categoryId);
-    try {
-      await removeCategory({ categoryId, userId });
-      console.log("removeCategory() successfully deleted category with categoryId:", categoryId);
-    } catch (error) {
-      console.error("Failed to remove category:", error);
-    }
-  };
-
-  // Create a new ordered array: selected categories first
-  const orderedCategories = [
-    ...fetchedCategories.filter((category) =>
-      selectedCategories.includes(category._id)
-    ),  
-    ...fetchedCategories.filter(
-      (category) => !selectedCategories.includes(category._id)
-    ),
-  ];
 
   const handleClickAddCategory = () => {
     const params = new URLSearchParams(window.location.search);
@@ -67,10 +43,11 @@ const ProductTypeSection = () => {
     router.replace(newUrl);
   };
 
+  // "+ Add Category" Action button component
   const AddCategoryButton: React.FC = () => {
     return (
       <Button
-        className="flex text-blue-700 text-md font-medium -m-2"
+        className="text-md -m-2 flex font-semibold text-blue-700"
         variant={"invisible"}
         onClick={handleClickAddCategory}
       >
@@ -80,6 +57,51 @@ const ProductTypeSection = () => {
     );
   };
 
+  // Data fetching loading state
+  if (!fetchedCategories || !userId)
+    return (
+      <FormCard title="Category Type" actionComponent={<AddCategoryButton />}>
+        <div className="flex flex-row gap-x-2">
+          <Skeleton className="h-36 w-56" />
+          <Skeleton className="h-36 w-56" />
+          <Skeleton className="h-36 w-56" />
+        </div>
+      </FormCard>
+    );
+
+  console.log(fetchedCategories);
+
+  const handleSelectCategory = (categoryId: Id<"categories">) => {
+    setSelectedCategories((prevSelected) =>
+      prevSelected.includes(categoryId)
+        ? prevSelected.filter((id) => id !== categoryId)
+        : [...prevSelected, categoryId],
+    );
+  };
+
+  const handleDeleteCategory = async (categoryId: Id<"categories">) => {
+    console.log("handleDeleteCategory called with categoryId:", categoryId);
+    try {
+      await removeCategory({ categoryId, userId });
+      console.log(
+        "removeCategory() successfully deleted category with categoryId:",
+        categoryId,
+      );
+    } catch (error) {
+      console.error("Failed to remove category:", error);
+    }
+  };
+
+  // Create a new ordered array: selected categories first
+  const orderedCategories = [
+    ...fetchedCategories.filter((category) =>
+      selectedCategories.includes(category._id),
+    ),
+    ...fetchedCategories.filter(
+      (category) => !selectedCategories.includes(category._id),
+    ),
+  ];
+
   return (
     <FormCard title="Product Type" actionComponent={<AddCategoryButton />}>
       <div
@@ -88,14 +110,14 @@ const ProductTypeSection = () => {
         {orderedCategories.length === 0 ? (
           <button
             onClick={handleClickAddCategory}
-            className="group flex shrink-0 w-56 h-36 bg-white hover:bg-neutral-50 border-2 border-dashed border-spacing-10 shadow-sm rounded-lg transition-all"
+            className="group flex h-36 w-56 shrink-0 border-spacing-10 rounded-lg border-2 border-dashed bg-white shadow-sm transition-all hover:bg-neutral-50"
           >
-            <div className="flex flex-col items-center justify-center h-full p-3 w-full">
-              <div className="text-3xl text-neutral-400 group-hover:text-neutral-500 transition-colors font-extrabold">
+            <div className="flex h-full w-full flex-col items-center justify-center p-3">
+              <div className="text-3xl font-extrabold text-neutral-400 transition-colors group-hover:text-neutral-500">
                 <FileQuestion />
               </div>
               <div className="">
-                <h2 className="flex h-full mt-2 items-end group-hover:text-neutral-500 transition-colors justify-center text-md font-medium text-neutral-400">
+                <h2 className="text-md mt-2 flex h-full items-end justify-center font-medium text-neutral-400 transition-colors group-hover:text-neutral-500">
                   Please add a category
                 </h2>
               </div>
@@ -117,9 +139,7 @@ const ProductTypeSection = () => {
                   emoji={category.emoji}
                   // categoryVolume={category.categoryVolume}
                   categoryId={category._id}
-                  isSelected={selectedCategories.includes(
-                    category._id
-                  )}
+                  isSelected={selectedCategories.includes(category._id)}
                   onSelect={handleSelectCategory}
                   onDelete={handleDeleteCategory} // Pass the delete handler as a prop
                 />
@@ -132,4 +152,4 @@ const ProductTypeSection = () => {
   );
 };
 
-export default ProductTypeSection;
+export default ProductCategoriesSection;

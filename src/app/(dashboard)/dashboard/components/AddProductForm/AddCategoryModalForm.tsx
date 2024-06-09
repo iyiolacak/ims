@@ -5,25 +5,22 @@ import { SubmitHandler, useForm, FormProvider } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import EmojiPicker from "../EmojiPicker";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addCategorySchema, CategoryFormValues } from "./schema"; // Adjust the import path based on your file structure
+import { addCategorySchema, CategoryFormData } from "./schema"; // Adjust the import path based on your file structure
 import { api } from "@/../convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useUserId } from "@/context/UserContext"; // Adjust the import path based on your file structure
 import { Id } from "@/../convex/_generated/dataModel"; // Import the Id type
 
-interface CategoryFormValuesWithUserId extends CategoryFormValues {
-  userId: Id<"users">;
-}
-
 const AddCategoryModalForm = ({
   formRef,
+  onClose
 }: {
-  onSubmit: (data: CategoryFormValues) => void;
+  onClose: () => void;
   formRef: RefObject<HTMLFormElement>;
 }) => {
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isFormSubmitting, setIsFormSubmitting] = useState<boolean>(false);
 
-  const methods = useForm<CategoryFormValues>({
+  const formMethods = useForm<CategoryFormData>({
     resolver: zodResolver(addCategorySchema),
   });
 
@@ -33,9 +30,10 @@ const AddCategoryModalForm = ({
     setFocus,
     setValue,
     formState: { errors },
-  } = methods;
+  } = formMethods;
   const userId = useUserId(); // Get the user ID from context
 
+  // Focus on categoryName input
   useEffect(() => {
     setFocus("categoryName");
     if (userId) {
@@ -44,42 +42,41 @@ const AddCategoryModalForm = ({
     }
   }, [setFocus, userId, setValue]);
 
+  // Category mutation function definition
   const mutateCategory = useMutation(api.categories.addCategory);
 
-  const handleAddCategory = async (categoryData: any) => {
-    setIsSubmitting(true);
-    const newCategories = [...categories, categoryData];
-    setCategories(newCategories)
+  // Form submit function
+  const handleAddCategory = async (categoryData: CategoryFormData) => {
+    setIsFormSubmitting(true);
+    if (isFormSubmitting === true) return;
     try {
       const newCategoryId = await mutateCategory(categoryData);
-    }
-     catch (error) {
+      onClose();
+    } catch (error) {
       console.error("handleAddCategory failed:", error);
-    }
-     finally {
-      setIsSubmitting(false);
+    } finally {
+      setIsFormSubmitting(false);
+      
     }
   };
 
-  const submitForm: SubmitHandler<CategoryFormValues> = async (data) => {
-    console.log("Form data:", data); // Log form data
+  // Second form submit function?
+  const submitForm: SubmitHandler<CategoryFormData> = async (data, event) => {
+    event?.preventDefault();
+    // User ID Validation
     if (!userId) {
       console.error("User ID not available");
       return;
     }
 
-    const categoryData = {
-      ...data,
-      emoji: data.emoji || "",
-      userId: userId as Id<"users">, // Convert userId to the correct type if needed
-    };
+    const categoryData = {...data};
     console.log("Category data to be submitted:", categoryData); // Log category data
 
     await handleAddCategory(categoryData);
   };
 
   return (
-    <FormProvider {...methods}>
+    <FormProvider {...formMethods}>
       <form ref={formRef} onSubmit={handleSubmit(submitForm)}>
         <div>
           <EmojiPicker name="emoji" />
@@ -108,9 +105,9 @@ const AddCategoryModalForm = ({
           type="submit"
           className="mt-5"
           variant={"ghost"}
-          disabled={isSubmitting}
+          disabled={isFormSubmitting}
         >
-          {isSubmitting ? "Submitting..." : "Create"}
+          {isFormSubmitting ? "Submitting..." : "Create"}
         </Button>
       </form>
     </FormProvider>
