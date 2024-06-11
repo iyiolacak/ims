@@ -9,6 +9,8 @@ import ProductCategoriesSection from "../components/AddProductForm/ProductCatego
 import ProductDetails from "../components/AddProductForm/ProductDetails";
 import { useForm } from "react-hook-form";
 import { Id } from "@/../convex/_generated/dataModel";
+import FieldBuilderForm from "../components/AddProductForm/FieldBuilderForm";
+import FieldBuilder from "../components/AddProductForm/FieldBuilder";
 
 const AddProduct = () => {
   const {
@@ -43,9 +45,12 @@ const AddProduct = () => {
             <div className="flex w-3/5 flex-col gap-y-4 pl-3">
               <ProductCategoriesSection onSelectCategories={() => {}} />
               <ProductDetails isCategoryLayoutOnEditingMode={isCategoryLayoutOnEditingMode}  />
+              <div className="w-full h-96 bg-white">
+                              </div>
             </div>
           </div>
         </form>
+                <FieldBuilder />
       </div>
     </>
   );

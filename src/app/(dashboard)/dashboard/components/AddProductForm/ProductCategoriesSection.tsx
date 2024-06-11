@@ -137,6 +137,7 @@ const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> = ({
                   key={index}
                   categoryName={category.categoryName}
                   emoji={category.emoji}
+                  isSubmitting={isSubmitting}
                   // categoryVolume={category.categoryVolume}
                   categoryId={category._id}
                   isSelected={selectedCategories.includes(category._id)}

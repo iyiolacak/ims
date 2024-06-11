@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import UserMenuButton from "@/components/ui/UserMenuButton";
 import sidebarData from "@/app/sidebarData";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const Sidebar = ({ className }: { className?: string }) => {
   const pathname = usePathname();
@@ -54,7 +55,12 @@ const Sidebar = ({ className }: { className?: string }) => {
       )}
     >
       <div>
-        <div className="flex justify-end my-1 mx-3">
+        <div className={clsx("flex justify-between my-1 mx-3 items-center", {"px-2": isOpen})}>
+          <div className={clsx("", {"block": isOpen, "hidden": !isOpen})}>
+            <Link href={"/"} className="text-xl text-slate-700">
+            ▲
+            </Link>
+          </div>
           <Button
             className="hover:bg-white rounded-lg p-2"
             variant={"ghost"}
@@ -63,7 +69,7 @@ const Sidebar = ({ className }: { className?: string }) => {
             {isOpen ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}
           </Button>
         </div>
-        <div className="p-3">
+        <div className={clsx("px-3 mt-2", { "mb-6 mt-6": !isOpen})}>
           <UserMenuButton isOpen={isOpen} />
         </div>
         {sidebarData.map((section, index) => (
@@ -73,7 +79,7 @@ const Sidebar = ({ className }: { className?: string }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
-                className="mt-2 mb-2 px-6 uppercase text-slate-400 text-xs font-medium"
+                className="my-1 px-6 uppercase text-slate-400 text-xs font-medium"
               >
                 {section.section}
               </motion.div>
@@ -84,12 +90,14 @@ const Sidebar = ({ className }: { className?: string }) => {
                 key={itemIndex}
                 ref={pathname === item.route ? setActiveRef : null}
                 className={clsx(
-                  "relative flex items-center pl-4 p-2.5 transition-all w-full",
+                  "relative flex items-center text-sm py-2 transition-all w-full",
                   {
-                    "pl-4 text-black hover:text-black": pathname === item.route,
-                    "pl-4 text-slate-600 hover:text-slate-400":
+                    " text-black hover:text-black": pathname === item.route,
+                    " text-slate-600 hover:text-slate-400":
                       pathname !== item.route,
-                    "justify-center": !isOpen,
+                    "pl-0 justify-center": !isOpen,
+                    "pl-6": isOpen,
+
                   }
                 )}
               >
