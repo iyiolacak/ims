@@ -25,7 +25,7 @@ const Sidebar = ({ className }: { className?: string }) => {
   const activeRef = useRef<HTMLAnchorElement | null>(
     null
   ) as MutableRefObject<HTMLAnchorElement | null>;
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -46,7 +46,7 @@ const Sidebar = ({ className }: { className?: string }) => {
 
   return (
     <motion.div
-      initial={{ width: "60px" }}
+      initial={{ width: isOpen ? "275px" : "60px" }}
       animate={{ width: isOpen ? "275px" : "60px" }}
       transition={{ duration: 0.2 }}
       className={clsx(
@@ -62,7 +62,7 @@ const Sidebar = ({ className }: { className?: string }) => {
             </Link>
           </div>
           <Button
-            className="hover:bg-white rounded-lg p-2"
+            className={clsx("hover:bg-white hover:text-black rounded-lg p-2")}
             variant={"ghost"}
             onClick={toggleSidebar}
           >
@@ -101,13 +101,21 @@ const Sidebar = ({ className }: { className?: string }) => {
                   }
                 )}
               >
+                <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: !isLoaded ? 0 : 1}}
+                transition={{ duration: 0.3 }}
+                className="flex items-center justify-center"
+                >
                 <FontAwesomeIcon
                   icon={item.icon}
                   className={clsx({
                     "text-black hover:text-black": pathname === item.route,
                     "text-slate-400": pathname !== item.route,
-                  })}
-                />
+                    })}
+                    size="lg"
+                    />
+                    </motion.p>
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: isOpen ? 1 : 0 }}
