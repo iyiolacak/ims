@@ -1,9 +1,11 @@
+"use client";
 import React from "react";
 import { useAuth, useClerk, useUser } from "@clerk/clerk-react";
 import { Skeleton } from "./skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Separator } from "./separator";
 import { Input } from "./input";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search } from "lucide-react";
 
 interface IUserMenuButton {
@@ -14,11 +16,18 @@ const UserMenuButton: React.FC<IUserMenuButton> = ({ isOpen }) => {
   const { openUserProfile } = useClerk();
   const { user, isSignedIn, isLoaded } = useUser();
   const { signOut } = useAuth();
+  const bezierCurve = [0.42, 0, 0.58, 1.0]; // Apple-like easing
 
   // Show a skeleton if user data isn't loaded yet
   if (!isLoaded) {
     return isOpen ? (
-      <div className="h-[140px]">
+      <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.3, ease: bezierCurve }}
+      className="h-[140px]"
+      >
         <div className="h-[123px] flex flex-col w-full px-2 py-3 bg-white border rounded-xl shadow-sm">
           <div className="flex items-center space-x-2 mt-3 mb-1">
             <Skeleton className="w-10 h-10 rounded-xl" />
@@ -30,7 +39,7 @@ const UserMenuButton: React.FC<IUserMenuButton> = ({ isOpen }) => {
           <Separator className="my-3" orientation="horizontal" />
           <Skeleton className="w-full h-12 rounded-lg" />
         </div>
-      </div>
+      </motion.div>
     ) : (
       <Skeleton className="w-10 h-10 rounded-xl" />
     );
@@ -44,8 +53,15 @@ const UserMenuButton: React.FC<IUserMenuButton> = ({ isOpen }) => {
   const handleProfileClick = () => {
     openUserProfile(); // This opens the Clerk user profile modal
   };
+
   return (
-    <div className="transition-all">
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.3, ease: bezierCurve }}
+      className="transition-all"
+    >
       {isOpen ? (
         <div className="h-[140px]">
           <div className="flex w-full px-2 py-2 bg-white border rounded-xl shadow-sm">
@@ -84,11 +100,8 @@ const UserMenuButton: React.FC<IUserMenuButton> = ({ isOpen }) => {
           </div>
         </div>
       ) : (
-        <div className="w-full flex justify-center">
-          <button
-            className="flex items-center justify-center space-x-2 px-2"
-            onClick={handleProfileClick}
-          >
+        <div className="w-full flex justify-start">
+          <button className="flex items-center" onClick={handleProfileClick}>
             <Avatar className="size-10 rounded-xl">
               {user.imageUrl ? (
                 <AvatarImage src={user.imageUrl} alt="User's profile image" />
@@ -99,7 +112,7 @@ const UserMenuButton: React.FC<IUserMenuButton> = ({ isOpen }) => {
           </button>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

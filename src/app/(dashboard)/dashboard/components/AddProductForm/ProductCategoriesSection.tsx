@@ -23,17 +23,18 @@ const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<
     Id<"categories">[]
   >([]);
+
   const router = useRouter();
-  const userId = useUserId();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const userId = useUserId();
   const fetchedCategories = useQuery(
     api.categories.getCategoriesByUser,
     userId ? { userId } : "skip",
   );
 
   useEffect(() => {
-    onSelectCategories(selectedCategories)
-  }, [selectedCategories, onSelectCategories])
+    onSelectCategories(selectedCategories);
+  }, [selectedCategories, onSelectCategories]);
   const removeCategory = useMutation(api.categories.removeCategory);
 
   const handleClickAddCategory = () => {
