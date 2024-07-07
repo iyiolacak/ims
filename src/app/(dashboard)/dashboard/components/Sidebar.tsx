@@ -34,18 +34,20 @@ const Sidebar = ({ className }: { className?: string }) => {
   const setActiveRef = useCallback((node: HTMLAnchorElement) => {
     if (node !== null) {
       activeRef.current = node;
+      console.log("Node offsetTop:", node.offsetTop); // Log offsetTop
       setActiveTop(node.offsetTop);
     }
   }, []);
   
   useEffect(() => {
     if (isLoaded && activeRef.current) {
+      console.log("ActiveRef offsetTop:", activeRef.current.offsetTop); // Log activeRef offsetTop
       setActiveTop(activeRef.current.offsetTop);
     }
   }, [pathname, isLoaded, isOpen]);
 
   const bezierCurve = [0, 0, 0.58, 1.0]; // Apple-like easing
-  const bezierBlurCurve = [0.42, 0, 0.58, 1.0] // Apple initial blur curve
+  const bezierBlurCurve = [0.42, 0, 0.58, 1.0]; // Apple initial blur curve
 
   return (
     <motion.div
