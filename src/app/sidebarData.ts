@@ -1,4 +1,4 @@
-import { faBook, faBox, faChartColumn, faCog, faDashboard, faEllipsisH, faQuestionCircle, faReceipt, faShoppingCart, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBagShopping, faBook, faBox, faChartColumn, faCog, faDashboard, faEllipsisH, faQuestionCircle, faReceipt, faShoppingCart, faSubscript, faUser, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 
 export const sidebarData = [
     {
@@ -17,7 +17,7 @@ export const sidebarData = [
           route: "/dashboard/my-publishing",
         },
         { name: "Products", icon: faBox, route: "/dashboard/products" },
-        { name: "Orders", icon: faShoppingCart, route: "/dashboard/orders" },
+        { name: "Orders", icon: faReceipt, route: "/dashboard/orders" },
         { name: "More", icon: faEllipsisH, route: "/dashboard/more" },
       ],
     },
@@ -26,11 +26,6 @@ export const sidebarData = [
       items: [
         { name: "Setting", icon: faCog, route: "/dashboard/setting" },
         { name: "Help", icon: faQuestionCircle, route: "/dashboard/help" },
-        {
-          name: "Subscriptions",
-          icon: faReceipt,
-          route: "/dashboard/subscriptions",
-        },
       ],
     },
   ];

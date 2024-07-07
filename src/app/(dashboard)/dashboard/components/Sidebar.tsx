@@ -17,19 +17,28 @@ import UserMenuButton from "@/components/ui/UserMenuButton";
 import sidebarData from "@/app/sidebarData";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import useShortcut from "@/hooks/useShortcut";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import Logo from "./Logo";
 
 const Sidebar = ({ className }: { className?: string }) => {
   const pathname = usePathname();
   const { isLoaded } = useUser();
   const [activeTop, setActiveTop] = useState(0);
   const activeRef = useRef<HTMLAnchorElement | null>(
-    null
+    null,
   ) as MutableRefObject<HTMLAnchorElement | null>;
   const [isOpen, setIsOpen] = useState(true);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  useShortcut("s", toggleSidebar);
 
   const setActiveRef = useCallback((node: HTMLAnchorElement) => {
     if (node !== null) {
@@ -38,7 +47,7 @@ const Sidebar = ({ className }: { className?: string }) => {
       setActiveTop(node.offsetTop);
     }
   }, []);
-  
+
   useEffect(() => {
     if (isLoaded && activeRef.current) {
       console.log("ActiveRef offsetTop:", activeRef.current.offsetTop); // Log activeRef offsetTop
@@ -46,69 +55,109 @@ const Sidebar = ({ className }: { className?: string }) => {
     }
   }, [pathname, isLoaded, isOpen]);
 
-  const bezierCurve = [0, 0, 0.58, 1.0]; // Apple-like easing
-  const bezierBlurCurve = [0.42, 0, 0.58, 1.0]; // Apple initial blur curve
+  const bezierCurve = [0, 0.33, 0.28, 1]; // Apple-like easing
 
   return (
     <motion.div
       initial={{ width: "275px" }}
       animate={{ width: isOpen ? "275px" : "60px" }}
-      transition={{ duration: 1, ease: bezierCurve }}
+      transition={{ duration: 0.3, ease: bezierCurve }}
       className={clsx(
-        "hidden md:block sticky top-0 bg-background shrink-0 border-r overflow-hidden",
-        className
+        "sticky top-0 z-50 hidden shrink-0 overflow-hidden border-r bg-background md:block",
+        className,
       )}
     >
       <div>
-        <div className={clsx("flex justify-between my-1 mx-3 items-center", { "px-2": isOpen })}>
-          <div className={clsx("", { "block": isOpen, "hidden": !isOpen })}>
-            <Link href={"/"} className="text-xl text-slate-700">
-              ▲
-            </Link>
-          </div>
-          <Button
-            className={clsx("hover:bg-white hover:text-black rounded-lg p-2")}
-            variant={"ghost"}
-            onClick={toggleSidebar}
-          >
-            {isOpen ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}
-          </Button>
+        <div
+          className={clsx("mx-3 my-1 flex items-center justify-between", {
+            "pl-2": isOpen,
+          })}
+        >
+            {isOpen && <Logo />}
+
+          {/* Shrink sidebar button */}
+          <HoverCard openDelay={0} closeDelay={-1}>
+            <HoverCardTrigger>
+              <Button
+                className={clsx(
+                  "rounded-lg p-2 hover:bg-white hover:text-black",
+                )}
+                variant={"ghost"}
+                onClick={toggleSidebar}
+              >
+                {isOpen ? (
+                  <ChevronsLeft size={16} />
+                ) : (
+                  <ChevronsRight size={16} />
+                )}
+              </Button>
+            </HoverCardTrigger>
+            <HoverCardContent
+            
+              side="right"
+              className="flex h-full w-full items-center justify-center border-none rounded-xl border border-neutral-700 bg-neutral-900 px-2 py-1.5"
+            >
+              <div className="flex items-center">
+                <span className="flex justify-center text-center text-xs text-white">
+                  {isOpen ? "Shrink" : "Expand"} the sidebar
+                </span>
+                <span className="ml-1 items-center justify-center rounded-md border bg-white px-1.5 py-0.5 text-xs font-semibold">
+                  S
+                </span>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
         </div>
-        <div className={clsx("px-3 mt-2", { "mb-6 mt-6": !isOpen })}>
+
+        <div className={clsx("mt-2 px-3", { "mb-6 mt-6": !isOpen })}>
           <UserMenuButton isOpen={isOpen} />
         </div>
         {sidebarData.map((section, index) => (
           <div key={index}>
-            <AnimatePresence>
-              {isOpen && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0, filter: "blur(3px)" }}
-                  animate={{ opacity: 1, height: "auto", filter: "blur(0px)" }}
-                  exit={{ opacity: 0, height: 0, filter: "blur(3px)" }}
-                  transition={{ duration: 0.05, ease: bezierCurve, filter: { duration: 0.1, ease: bezierCurve } }}
-                  className="my-1 px-6 uppercase text-slate-400 text-xs font-medium text-nowrap"
-                >
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+
+                transition={{ duration: 0.3, ease: bezierCurve }}
+              >
+                <div className="my-1 text-nowrap px-6 text-xs font-medium uppercase text-slate-400">
                   {section.section}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
             {section.items.map((item, itemIndex) => (
+              // the sidebar elements dropping down animation
               <motion.div
                 key={itemIndex}
-                initial={{ opacity: 0, height: 1, margin: 0, filter: "blur(3px)" }}
-                animate={{ opacity: 1, height: "auto", margin: "8px 0", filter: "blur(0px)" }}
-                exit={{ opacity: 0, height: 1, margin: 0, filter: "blur(3px)" }}
-                transition={{ duration: 0.7, ease: bezierCurve, filter: { duration: 0.4, ease: bezierCurve } }}
+                initial={{
+                  opacity: 0,
+                  height: 1,
+                  margin: 0,
+                  filter: "blur(2px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  height: "auto",
+                  margin: "8px 0",
+                  filter: "blur(0px)",
+                }}
+                exit={{ opacity: 0, height: 1, margin: 0, filter: "blur(2px)" }}
+                transition={{
+                  duration: 0.5,
+                  ease: bezierCurve,
+                  filter: { duration: 0.4, ease: bezierCurve },
+                }}
               >
                 <Link
                   href={item.route}
                   ref={pathname === item.route ? setActiveRef : null}
                   className={clsx(
-                    "relative flex items-start text-sm py-2 transition-all w-full pl-6",
+                    "relative flex w-full items-start py-2 pl-6 text-sm transition-all",
                     {
-                      " text-black hover:text-black": pathname === item.route,
-                      " text-slate-600 hover:text-slate-400": pathname !== item.route,
-                    }
+                      "text-black hover:text-black": pathname === item.route,
+                      "text-slate-600 hover:text-slate-400":
+                        pathname !== item.route,
+                    },
                   )}
                 >
                   <FontAwesomeIcon
@@ -120,10 +169,15 @@ const Sidebar = ({ className }: { className?: string }) => {
                     size="lg"
                   />
                   <motion.p
-                    initial={{ opacity: 0, transform: "translateX(-20px)" }}
-                    animate={{ opacity: isOpen ? 1 : 0, transform: isOpen ? "translateX(0)" : "translateX(-20px)" }}
-                    transition={{ duration: 0.3 }}
-                    className={clsx("text-md font-medium ml-4 text-nowrap", {
+                    initial={{ opacity: 0, transform: "translateX(-20px)", filter: "blur(2px)" }}
+                    animate={{
+                      opacity: isOpen ? 1 : 0,
+                      transform: isOpen ? "translateX(0)" : "translateX(-20px)",
+                      filter: isOpen ? "blur(0px)" : "blur(2px)",
+
+                    }}
+                    transition={{ duration: 0.2, ease: bezierCurve, filter: {duration: 0.1, bezier: bezierCurve } }}
+                    className={clsx("text-md ml-4 text-nowrap font-medium", {
                       hidden: !isOpen,
                     })}
                   >

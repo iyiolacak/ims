@@ -14,7 +14,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex h-screen flex-col overflow-hidden">
             <div className="flex flex-grow flex-row overflow-hidden">
               <Sidebar />
-              <div className="flex-grow overflow-auto p-6">{children}</div>
+              <div className="flex-grow overflow-x-hidden p-6">{children}</div>
             </div>
           </div>
         </ModalProvider>
