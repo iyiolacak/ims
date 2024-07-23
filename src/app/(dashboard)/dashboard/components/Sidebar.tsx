@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useUser } from "@clerk/clerk-react";
 import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import UserMenuButton from "@/components/ui/UserMenuButton";
+import UserMenuButton from "@/components/UserMenuButton/UserMenuButton";
 import sidebarData from "@/app/sidebarData";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -73,7 +73,7 @@ const Sidebar = ({ className }: { className?: string }) => {
             "pl-2": isOpen,
           })}
         >
-            {isOpen && <Logo />}
+          {isOpen && <Logo />}
 
           {/* Shrink sidebar button */}
           <HoverCard openDelay={0} closeDelay={-1}>
@@ -93,15 +93,14 @@ const Sidebar = ({ className }: { className?: string }) => {
               </Button>
             </HoverCardTrigger>
             <HoverCardContent
-            
               side="right"
-              className="flex h-full w-full items-center justify-center border-none rounded-xl border border-neutral-700 bg-neutral-900 px-2 py-1.5"
+              className="flex h-full w-full items-center justify-center rounded-xl border border-none border-neutral-700 bg-neutral-900 px-2 py-1.5"
             >
               <div className="flex items-center">
                 <span className="flex justify-center text-center text-xs text-white">
                   {isOpen ? "Shrink" : "Expand"} the sidebar
                 </span>
-                <span className="ml-1 items-center justify-center rounded-md border bg-white px-1.5 py-0.5 text-xs font-semibold">
+                <span className="twice-pulse-glow ml-1 items-center justify-center rounded-md border bg-white px-1.5 py-0.5 text-xs font-semibold text-black">
                   S
                 </span>
               </div>
@@ -115,15 +114,9 @@ const Sidebar = ({ className }: { className?: string }) => {
         {sidebarData.map((section, index) => (
           <div key={index}>
             {isOpen && (
-              <motion.div
-                initial={{ opacity: 0 }}
-
-                transition={{ duration: 0.3, ease: bezierCurve }}
-              >
-                <div className="my-1 text-nowrap px-6 text-xs font-medium uppercase text-slate-400">
-                  {section.section}
-                </div>
-              </motion.div>
+              <div className="my-1 text-nowrap px-6 text-xs font-medium uppercase text-slate-400">
+                {section.section}
+              </div>
             )}
             {section.items.map((item, itemIndex) => (
               // the sidebar elements dropping down animation
@@ -169,14 +162,21 @@ const Sidebar = ({ className }: { className?: string }) => {
                     size="lg"
                   />
                   <motion.p
-                    initial={{ opacity: 0, transform: "translateX(-20px)", filter: "blur(2px)" }}
+                    initial={{
+                      opacity: 0,
+                      transform: "translateX(-20px)",
+                      filter: "blur(2px)",
+                    }}
                     animate={{
                       opacity: isOpen ? 1 : 0,
                       transform: isOpen ? "translateX(0)" : "translateX(-20px)",
                       filter: isOpen ? "blur(0px)" : "blur(2px)",
-
                     }}
-                    transition={{ duration: 0.2, ease: bezierCurve, filter: {duration: 0.1, bezier: bezierCurve } }}
+                    transition={{
+                      duration: 0.2,
+                      ease: bezierCurve,
+                      filter: { duration: 0.1, bezier: bezierCurve },
+                    }}
                     className={clsx("text-md ml-4 text-nowrap font-medium", {
                       hidden: !isOpen,
                     })}

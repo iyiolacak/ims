@@ -7,7 +7,7 @@ import {
 } from "@clerk/nextjs";
 import React from "react";
 import { Button } from "./ui/button";
-import UserMenuButton from "./ui/UserMenuButton";
+import UserMenuButton from "./UserMenuButton/UserMenuButton";
 import { Skeleton } from "./ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";

@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+
+// Prevent trigger if an input is focused.
 const useShortcut = (key: string, callback: () => void) => {
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {

@@ -21,7 +21,7 @@ export const list = query({
         // insert their name into the `author` field.
         const user = await ctx.db.get(message.userId);
         return {
-          author: user?.name ?? "deleted user",
+          author: user?.firstName ?? "deleted user",
           ...message,
         };
       }),

@@ -26,9 +26,5 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  return (
-    <UserContext.Provider value={userId}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={userId}>{children}</UserContext.Provider>;
 }

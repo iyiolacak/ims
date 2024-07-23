@@ -12,7 +12,7 @@ type DefaultVariants<V extends Variants> = {
   [K in keyof V]: keyof V[K];
 };
 
-interface Config<V extends Variants> {
+export interface Config<V extends Variants> {
   base: string;
   variants: V;
   defaultVariants: DefaultVariants<V>;
@@ -66,6 +66,15 @@ export function createVariants<V extends Variants>(config: Config<V>) {
   };
 }
 
+export const formatOAuthName = (strategy: string): string => {
+  // Remove the 'oauth_' prefix
+  const name = strategy.replace('oauth_', '');
+  
+  // Capitalize the first letter
+  return name.charAt(0).toUpperCase() + name.slice(1);
+};
+
+
 function combineClasses(...classes: string[]): string {
   return classes.filter(Boolean).join(" ");
 }
@@ -73,7 +82,4 @@ function combineClasses(...classes: string[]): string {
 // Create the variant function
 const buttonVariant = createVariants(config);
 
-// Example usage
-const classNames = buttonVariant({ size: "md", color: "secondary" });
-console.log(classNames); // Output: "font-bold w-14 h-10 bg-black"
 

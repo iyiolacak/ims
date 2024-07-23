@@ -62,7 +62,7 @@ const Dashboard = () => {
           <DynamicCard
             dataMonth="December"
             dataTitle="income"
-            dataValue={0} // Data comes as direct number as like "287000" rather than "287.000"
+            dataValue={287000} // Data comes as direct number as like "287000" rather than "287.000"
             dataValuePrefix="$"
             tags={revenueData}
             growthPositive={true}

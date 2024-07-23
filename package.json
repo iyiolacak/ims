@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/clerk-js": "^5.8.1",
     "@clerk/clerk-react": "^5.1.0",
     "@clerk/nextjs": "^5.0.12",
     "@clerk/types": "^4.2.1",
@@ -37,13 +38,14 @@
     "convex": "^1.11.2",
     "emoji-mart": "^5.6.0",
     "framer-motion": "^11.2.6",
+    "input-otp": "^1.2.4",
     "lucide-react": "^0.376.0",
     "next": "14.2.3",
     "prettier-plugin-tailwindcss": "^0.6.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-flip-move": "^3.0.5",
-    "react-hook-form": "^7.51.5",
+    "react-hook-form": "^7.52.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-toastify": "^10.0.5",
     "react-transition-group": "^4.4.5",

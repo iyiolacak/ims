@@ -17,9 +17,11 @@ const convex = new ConvexReactClient(
 );
 
 export function Providers({ children }: any) {
+  console.log(convex)
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+        {console.log("client convex", convex)}
         {children}
       </ConvexProviderWithClerk>
     </ClerkProvider>

@@ -32,6 +32,7 @@ const EmojiPicker: React.FC<IEmojiPicker> = ({ name }) => {
   const { setValue, watch } = useFormContext(); // Use useFormContext
   const selectedEmoji = watch(name); // Watch the form state
 
+  // Emoji data fetch
   useEffect(() => {
     const fetchData = async () => {
       try {
