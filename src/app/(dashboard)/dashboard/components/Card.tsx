@@ -21,7 +21,7 @@ const Card: React.FC = ({ title, description, className }: CardProps) => {
         <h2 className="text-3xl font-bold">{title}</h2>
         <p className="text-md mb-4 mt-2 w-80 text-slate-400">{description}</p>
         <div className="space-x-3">
-          <Button className="bg-blue-700" size={"lg"} variant={"default"}>
+          <Button size={"lg"} variant={"default"}>
             Analyze This &nbsp;
             {<SparklesIcon size={16} />}
           </Button>

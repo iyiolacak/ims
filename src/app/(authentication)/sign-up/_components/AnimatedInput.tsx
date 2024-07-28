@@ -1,9 +1,9 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import "@/app/globals.css";
-import { AlertCircleIcon } from "lucide-react";
+import { AlertCircleIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 
 interface AnimatedInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -12,15 +12,36 @@ interface AnimatedInputProps
   id: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  password?: boolean;
   error?: string;
 }
 
 const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
   (
-    { prompt, placeholder, id, value, onChange, password, error, ...props },
+    {
+      prompt,
+      placeholder,
+      id,
+      value,
+      onChange,
+      type = "text",
+      error,
+      ...props
+    },
     ref,
   ) => {
+    const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+
+    const handleToggleVisibility = () => setIsPasswordVisible(!isPasswordVisible);
+
+    const handleClear = () => {
+      if (onChange) {
+        onChange({
+          target: { value: "" },
+        } as React.ChangeEvent<HTMLInputElement>);
+      }
+    };
+
+    const isPasswordField = type === "password";
     return (
       <div>
         <div className="relative">
@@ -29,11 +50,15 @@ const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
             onChange={onChange}
             value={value}
             ref={ref}
+            type={
+              isPasswordField ? (isPasswordVisible ? "text" : "password") : type
+            }
             {...props}
             className={cn(`pt-5 ${props.className}`, {
               "border-red-600 focus-visible:ring-red-600": error,
             })}
             placeholder={placeholder}
+            aria-describedby={error ? `${id}-error` : undefined}
           />
           <label
             htmlFor={id}
@@ -41,16 +66,32 @@ const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
               "absolute left-3 px-1 transition-all duration-200 ease-in-out hover:cursor-text",
               "floating-label",
               {
-                "text-red-600":error
-              }
+                "text-red-600": error,
+              },
             )}
           >
             {prompt}
           </label>
+          {isPasswordField && (
+            <>
+              <button
+                type="button"
+                onClick={handleToggleVisibility}
+                className="group absolute inset-y-0 right-4 flex items-center px-3 py-2"
+                aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+              >
+                {isPasswordVisible ? (
+                  <EyeIcon className="size-5 text-gray-400 group-hover:text-gray-500 transition-colors" strokeWidth={2}/>
+                ) : (
+                  <EyeOffIcon className="size-5 text-gray-400" strokeWidth={2}/>
+                )}
+              </button>
+            </>
+          )}
         </div>
         {error && (
-          <div className="flex flex-row items-center mt-1.5">
-            <AlertCircleIcon className=" text-red-600 mr-1" size={18}/>
+          <div className="mt-1.5 flex flex-row items-center" id={`${id}-error`} role="alert">
+            <AlertCircleIcon className="mr-1 text-red-600" size={18} />
             <p className="text-xs font-medium text-red-600">{error}</p>
           </div>
         )}

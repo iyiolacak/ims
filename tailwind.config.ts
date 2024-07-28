@@ -33,6 +33,10 @@ const config: Config = {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
+        growth: {
+          DEFAULT: "hsl(var(--growth))",
+          foreground: "hsl(var(--growth-foreground))",
+        },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",

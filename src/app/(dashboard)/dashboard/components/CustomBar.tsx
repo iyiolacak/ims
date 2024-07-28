@@ -21,7 +21,7 @@ export interface CustomBarProps extends BarProps {
           y={y}
           width={width}
           height={height}
-          fill={isHighlighted ? "#EDEDF4" : "#EDEDF4"} // Different fill for the highlighted bar
+          fill={"#EDEDF4"} // Different fill for the highlighted bar
           rx={radius}
           ry={radius}
         />

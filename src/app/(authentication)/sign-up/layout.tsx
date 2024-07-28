@@ -4,13 +4,13 @@ import SignUpPageOtherHalf from "./_components/SignUpPageOtherHalf";
 
 const SignUpLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex w-full h-full flex-col">
-      <AuthHeader />
-      <div className="flex flex-row">
-        <div className="mx-auto flex h-full justify-center md:w-2/6">
+    <div className="flex w-full min-h-screen flex-row ">
+      {/* add overflow-y-hidden */}
+      <div className="w-full flex flex-row">
+        <div className="flex h-full justify-center md:w-1/2">
           {children}
         </div>
-        <div className="md:w-1/2">
+        <div className="hidden md:block md:w-1/2">
         <SignUpPageOtherHalf/>
         </div>
       </div>

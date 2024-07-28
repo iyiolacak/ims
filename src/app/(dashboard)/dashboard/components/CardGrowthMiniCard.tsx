@@ -12,12 +12,12 @@ const CardGrowthMiniCard = ({
   return (
     <div
       className={clsx(
-        `flex flex-row py-0.5 px-2 border-2 rounded-md ${growthPositive ? "border-blue-700" : "border-red-500"}`
+        `flex flex-row py-0.5 px-2 border-2 rounded-md ${growthPositive ? "border-growth border-12" : "border-red-500"}`
       )}
     >
       <p
         className={clsx(
-          `flex flex-row font-semibold text-sm items-center justify-center', ${growthPositive ? "text-blue-700" : "text-red-500"}`
+          `flex flex-row font-semibold text-sm items-center justify-center', ${growthPositive ? "text-growth" : "text-red-500"}`
         )}
       >
         {growthPositive ? <MoveUpRight size={16} strokeWidth={2} /> : <MoveDownRight size={16} strokeWidth={2} /> }<span className="pl-0.5 select-none">

@@ -3,8 +3,6 @@
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
-import App from "next/app";
-import { PropsWithChildren } from "react";
 
 const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -17,11 +15,9 @@ const convex = new ConvexReactClient(
 );
 
 export function Providers({ children }: any) {
-  console.log(convex)
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-        {console.log("client convex", convex)}
         {children}
       </ConvexProviderWithClerk>
     </ClerkProvider>
