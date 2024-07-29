@@ -54,7 +54,7 @@ const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
               isPasswordField ? (isPasswordVisible ? "text" : "password") : type
             }
             {...props}
-            className={cn(`pt-5 ${props.className}`, {
+            className={cn(`pt-5 group ${props.className}`, {
               "border-red-600 focus-visible:ring-red-600": error,
             })}
             placeholder={placeholder}
@@ -63,8 +63,8 @@ const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
           <label
             htmlFor={id}
             className={cn(
-              "absolute left-3 px-1 transition-all duration-200 ease-in-out hover:cursor-text",
-              "floating-label",
+              "absolute left-3 px-1 transition-all duration-200 ease-in-out hover:cursor-text group-disabled:text-blue-500",
+              "floating-label group-disabled:text-blue-500",
               {
                 "text-red-600": error,
               },

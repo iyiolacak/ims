@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -16,6 +16,8 @@ const OTPCodeSchema = z.object({
 
 type TOTPCode = z.infer<typeof OTPCodeSchema>;
 
+
+
 const OTPForm = () => {
   const {
     register,
@@ -24,15 +26,16 @@ const OTPForm = () => {
   } = useForm<TOTPCode>({
     resolver: zodResolver(OTPCodeSchema),
   });
+  const firstInputRef = useRef(null);
   const onSubmit = (OTPCode: TOTPCode) => {
     console.log("one time password:", OTPCode);
   };
+
   return (
-    <div className="w-full items-center justify-center">
-      there you will face the real OTP code.
+    <div className="flex items-center justify-center">
       <InputOTP maxLength={6}>
         <InputOTPGroup>
-          <InputOTPSlot index={0} />
+          <InputOTPSlot index={0}/>
           <InputOTPSlot index={1} />
           <InputOTPSlot index={2} />
         </InputOTPGroup>

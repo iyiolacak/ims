@@ -19,7 +19,7 @@ const characterVariants = {
   }),
 };
 
-const TextEffect = ({ text, seqIndex }: { text: string; seqIndex: number }) => {
+const TextEffect = ({ text }: { text: string }) => {
   const characters = splitText(text);
 
   return (
@@ -28,11 +28,10 @@ const TextEffect = ({ text, seqIndex }: { text: string; seqIndex: number }) => {
         {text}
       </span>
       {characters.map((char: string, index: number) => {
-        const uniqueId = `${seqIndex}-${char}-${index}`;
         return (
           <motion.span
             aria-hidden
-            key={uniqueId}
+            key={`${char}-${index}`}
             initial="hidden"
             animate="visible"
             custom={index}
