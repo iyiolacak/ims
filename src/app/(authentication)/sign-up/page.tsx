@@ -12,12 +12,14 @@ import { ArrowUpRight } from "lucide-react";
 import SignUpStageIndicator from "./_components/SignUpStageIndicator";
 import Divider from "./_components/Divider";
 import SectionHeader from "./_components/SectionHeader";
+import { useSignUpFormContext } from "@/context/SignUpFormContext";
 
 const SignUp = () => {
   const { isLoaded, signUp } = useSignUp();
+  const { isSubmitting } = useSignUpFormContext();
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-4 py-3 sm:w-4/6 md:w-4/6 lg:3/6 md:px-3">
-      <Logo size={48} className="py-7 flex items-center justify-center" />
+    <div className="flex h-full w-full flex-col items-center px-4 py-3">
+      <Logo size={48} className="flex items-center py-7" />
       <SectionHeader
         title="Create your Einv account."
         subtitle={
@@ -36,6 +38,8 @@ const SignUp = () => {
           className="border bg-white font-semibold"
           signUp={signUp}
           isLoaded={isLoaded}
+          disabled={isSubmitting}
+          
         />
       </div>
       {/* 'Or' divider */}
@@ -43,9 +47,6 @@ const SignUp = () => {
       {/* Form: Email input and submit button */}
       <SignUpForm signUp={signUp} isLoaded={isLoaded} />
       <LegalTOSText />
-      <div className="flex h-full w-full flex-col justify-end">
-        <SignUpStageIndicator stage={3} outOf={5} />
-      </div>
     </div>
   );
 };

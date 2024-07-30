@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { handleClerkError } from "../../clerkErrorHandler";
 import AnimatedInput from "./AnimatedInput";
 import { ClerkAPIError, SignUpResource } from "@clerk/types";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { CircularLoading } from "respinner";
 import { useSignUpFormContext } from "@/context/SignUpFormContext";
 import { AlertCircleIcon } from "lucide-react";
@@ -33,30 +33,48 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ signUp, isLoaded }) => {
   } = useForm<TSignUpFormValues>({
     resolver: zodResolver(signUpSchema),
   });
-  const { setSubmittedFormData } = useSignUpFormContext();
+
+  const { setSubmittedFormData, setIsSubmitting, isSubmitting } =
+    useSignUpFormContext();
+
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+
   const [serverError, setServerError] = useState<ClerkAPIError[] | null>(null);
+
+  // Handle submit
   const onSubmit = async (data: TSignUpFormValues) => {
     if (!isLoaded || !signUp) {
       return;
     }
-    setLoading(true);
-    console.log(data);
+    // Activate loading state of the page.
+    setIsSubmitting(true);
     try {
       // await signUp.create({
-      //   emailAddress: data.email,
-      // });
-      // Send email verification code
- 
-      // Change this to the desired path where email verification will be handled
+        //   emailAddress: data.email,
+        // });
+        // Send email verification code - Prepare OTP.
+
+      // Change this to the desired path where email verification will be handled.
       router.push("/sign-up/verify-email");
-      setSubmittedFormData(data)
+
+      // Set the submitted form data state for reflecting the data on UI, in the next pages.
+      setSubmittedFormData(data);
     } catch (err) {
       const errorMessage = handleClerkError(err);
+      // serverError state will be reflected on the UI, below the submit button.
       setServerError(errorMessage);
     }
   };
+
+  // Email input ref.
+  const emailInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Focus emailInputRef.
+  useEffect(() => {
+    emailInputRef.current?.focus();
+  }, []);
+
+  const { ref, ...rest } = register('email');
 
   return (
     <>
@@ -69,9 +87,13 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ signUp, isLoaded }) => {
               prompt="Enter your email"
               {...register("email")}
               placeholder="example@example.com"
-              disabled={loading}
+              disabled={isSubmitting}
               error={errors.email?.message}
               suppressHydrationWarning
+              ref={(e) => {
+                ref(e);
+                emailInputRef.current = e;
+              }}
             />
             {/* Password input */}
             {/* <AnimatedInput
@@ -84,17 +106,26 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ signUp, isLoaded }) => {
               suppressHydrationWarning
             /> */}
             <div>
-              <Button type="submit" disabled={loading} className="w-full bg-primary" size={"lg"}>
-                {!loading ? "Continue with email" : <CircularLoading size={25} duration={1} stroke="#FFF"/>
-                }
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-primary"
+                size={"lg"}
+              >
+                {!isSubmitting ? (
+                  "Continue with email"
+                ) : (
+                  <CircularLoading size={25} duration={1} stroke="#FFF" />
+                )}
               </Button>
               {serverError && (
-          <div className="mt-1.5 flex flex-row items-center" role="alert">
-            <AlertCircleIcon className="mr-1 text-red-600" size={18} />
-            <p className="text-xs font-medium text-red-600">{JSON.stringify(serverError)}</p>
-          </div>
-        )}
-
+                <div className="mt-1.5 flex flex-row items-center" role="alert">
+                  <AlertCircleIcon className="mr-1 text-red-600" size={18} />
+                  <p className="text-xs font-medium text-red-600">
+                    {JSON.stringify(serverError)}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </form>

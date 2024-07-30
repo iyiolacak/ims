@@ -9,14 +9,20 @@ const SignUpFormContext = createContext<SignUpFormContextValue | undefined>(
 interface SignUpFormContextValue {
   submittedFormData: Partial<TSignUpFormValues>;
   setSubmittedFormData: React.Dispatch<React.SetStateAction<Partial<TSignUpFormValues>>>;
+  isSubmitting: boolean;
+  setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>
+  stage: number;
+  setStage: React.Dispatch<React.SetStateAction<number>>;
 }
 const SignUpFormProvider = ({ children }: { children: React.ReactNode }) => {
   const [submittedFormData, setSubmittedFormData] = useState<Partial<TSignUpFormValues>>({
     email: "",
   });
+const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+const [stage, setStage] = useState<number>(1)
 
   return (
-    <SignUpFormContext.Provider value={{ submittedFormData, setSubmittedFormData }}>
+    <SignUpFormContext.Provider value={{ submittedFormData, setSubmittedFormData, isSubmitting, setIsSubmitting, stage, setStage }}>
       {children}
     </SignUpFormContext.Provider>
   );

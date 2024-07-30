@@ -11,11 +11,11 @@ type OAuthButtonProps = {
   className?: string;
   signUp: SignUpResource | undefined;
   isLoaded: boolean;
+  disabled?: boolean;
 };
 
-const OAuthSignInButton: React.FC<OAuthButtonProps> = ({ isLoaded, signUp, className, strategy }) => {
+const OAuthSignInButton: React.FC<OAuthButtonProps> = ({ isLoaded, signUp, className, strategy, disabled }) => {
   const mapping = oauthMapping[strategy];
-  const [isDisabled, setIsDisabled] = useState<boolean>(false)
   const signInWith = (strategy: OAuthStrategy) => {
     if (signUp) {
       return signUp.authenticateWithRedirect({
@@ -32,7 +32,7 @@ const OAuthSignInButton: React.FC<OAuthButtonProps> = ({ isLoaded, signUp, class
       className={`${className}`}
       size={"lg"}
       onClick={() => signInWith(strategy)}
-      disabled={isDisabled}
+      disabled={disabled}
     >
       {/* {mapping?.name || "Sign In"} */}
       Continue with {mapping?.name}
