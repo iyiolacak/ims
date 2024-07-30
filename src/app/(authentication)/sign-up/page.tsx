@@ -33,10 +33,10 @@ const SignUp = () => {
       />
 
       <div className="my-3 grid w-full grid-cols-1 gap-x-2 gap-y-3">
+        {/* Must provide a signUp object from useSignUp which I just created a context for. */}
         <OAuthSignInButton
           strategy="oauth_google"
           className="border bg-white font-semibold"
-          signUp={signUp}
           isLoaded={isLoaded}
           disabled={isSubmitting}
           
@@ -45,7 +45,9 @@ const SignUp = () => {
       {/* 'Or' divider */}
       <Divider />
       {/* Form: Email input and submit button */}
-      <SignUpForm signUp={signUp} isLoaded={isLoaded} />
+
+      {/* Must provide a signUp object from useSignUp which I just created a context for. */}
+      <SignUpForm />
       <LegalTOSText />
     </div>
   );

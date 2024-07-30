@@ -13,6 +13,7 @@ interface SignUpFormContextValue {
   setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>
   stage: number;
   setStage: React.Dispatch<React.SetStateAction<number>>;
+  
 }
 const SignUpFormProvider = ({ children }: { children: React.ReactNode }) => {
   const [submittedFormData, setSubmittedFormData] = useState<Partial<TSignUpFormValues>>({
