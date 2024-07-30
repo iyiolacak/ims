@@ -6,16 +6,20 @@ import { OAuthStrategy, SignUpResource } from "@clerk/types";
 import React from "react";
 import { useState } from "react";
 import { oauthMapping } from "./oauthMapping";
+import { useSignUpContext } from "@/context/SignUpContext";
 type OAuthButtonProps = {
-  strategy: OAuthStrategy; 
+  strategy: OAuthStrategy;
   className?: string;
-  signUp: SignUpResource | undefined;
-  isLoaded: boolean;
   disabled?: boolean;
 };
 
-const OAuthSignInButton: React.FC<OAuthButtonProps> = ({ isLoaded, signUp, className, strategy, disabled }) => {
+const OAuthSignInButton: React.FC<OAuthButtonProps> = ({
+  className,
+  strategy,
+  disabled,
+}) => {
   const mapping = oauthMapping[strategy];
+  const { signUp } = useSignUpContext();
   const signInWith = (strategy: OAuthStrategy) => {
     if (signUp) {
       return signUp.authenticateWithRedirect({

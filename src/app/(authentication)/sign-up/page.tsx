@@ -37,7 +37,6 @@ const SignUp = () => {
         <OAuthSignInButton
           strategy="oauth_google"
           className="border bg-white font-semibold"
-          isLoaded={isLoaded}
           disabled={isSubmitting}
           
         />

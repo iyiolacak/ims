@@ -25,7 +25,7 @@ const OTPForm = () => {
   } = useForm<TOTPCode>({
     resolver: zodResolver(OTPCodeSchema),
   });
-  const firstInputRef = useRef(null);
+
   const onSubmit = (OTPCode: TOTPCode) => {
     console.log("one time password:", OTPCode);
   };

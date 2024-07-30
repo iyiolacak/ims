@@ -11,12 +11,8 @@ import { ClerkAPIError, SignUpResource } from "@clerk/types";
 import { useRouter } from "next/navigation";
 import { CircularLoading } from "respinner";
 import { useSignUpFormContext } from "@/context/SignUpFormContext";
+import { useSignUpContext } from "@/context/SignUpContext";
 import { AlertCircleIcon } from "lucide-react";
-
-interface SignUpFormProps {
-  signUp: SignUpResource | undefined;
-  isLoaded: boolean;
-}
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -24,7 +20,7 @@ const signUpSchema = z.object({
 
 export type TSignUpFormValues = z.infer<typeof signUpSchema>;
 
-const SignUpForm: React.FC<SignUpFormProps> = ({ signUp, isLoaded }) => {
+const SignUpForm: React.FC = () => {
   const {
     register,
     watch,
@@ -34,6 +30,8 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ signUp, isLoaded }) => {
     resolver: zodResolver(signUpSchema),
   });
 
+  // Warning: It is not form values context!
+  const { isLoaded, signUp, setActive } = useSignUpContext();
   const { setSubmittedFormData, setIsSubmitting, isSubmitting } =
     useSignUpFormContext();
 
