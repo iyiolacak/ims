@@ -9,14 +9,13 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { OTPInputProps } from "input-otp";
 
 const OTPCodeSchema = z.object({
   OTPCode: z.string().min(6),
 });
 
 type TOTPCode = z.infer<typeof OTPCodeSchema>;
-
-
 
 const OTPForm = () => {
   const {
@@ -30,12 +29,16 @@ const OTPForm = () => {
   const onSubmit = (OTPCode: TOTPCode) => {
     console.log("one time password:", OTPCode);
   };
-
+  const OTPInputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    OTPInputRef.current?.focus()
+  }, [])
   return (
     <div className="flex items-center justify-center">
-      <InputOTP maxLength={6}>
+      <InputOTP maxLength={6}
+      ref={OTPInputRef}>
         <InputOTPGroup>
-          <InputOTPSlot index={0}/>
+          <InputOTPSlot index={0} />
           <InputOTPSlot index={1} />
           <InputOTPSlot index={2} />
         </InputOTPGroup>
