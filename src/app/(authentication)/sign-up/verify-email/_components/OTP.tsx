@@ -1,8 +1,8 @@
 "use client";
-import OTPForm from "./_components/OTPForm";
+import OTPForm from "./OTPForm";
 import { useSignUpFormContext } from "@/context/SignUpFormContext";
 import { PencilLine } from "lucide-react";
-import SignUpStageIndicator from "../_components/SignUpStageIndicator";
+import SignUpStageIndicator from "../../_components/SignUpStageIndicator";
 
 const VerifyEmail = () => {
 

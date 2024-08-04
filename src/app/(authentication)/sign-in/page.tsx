@@ -2,7 +2,7 @@ import React from 'react'
 
 const SignIn = () => {
   return (
-    <div>SignIn</div>
+    <div className='max-w-lg mx-auto bg-blue-200 h-full'>SignIn</div>
   )
 }
 

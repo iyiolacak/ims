@@ -1,78 +1,46 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { useSignUp } from "@clerk/nextjs";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { handleClerkError } from "../../clerkErrorHandler";
 import AnimatedInput from "./AnimatedInput";
-import { ClerkAPIError, SignUpResource } from "@clerk/types";
 import { useRouter } from "next/navigation";
 import { CircularLoading } from "respinner";
-import { useSignUpFormContext } from "@/context/SignUpFormContext";
-import { useSignUpContext } from "@/context/SignUpContext";
-import { AlertCircleIcon } from "lucide-react";
+import { SubmissionStatus, useSignUpContext } from "@/context/SignUpContext";
+import {
+  AlertCircleIcon,
+  Check,
+  CircleX,
+  Cross,
+  MessageCircleQuestionIcon,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
-const signUpSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-});
-
-export type TSignUpFormValues = z.infer<typeof signUpSchema>;
+// To-do
+// - Make custom flow succeed a sign up
+// - Animation between route - first page will have end animation, second page will have start. DONE.
 
 const SignUpForm: React.FC = () => {
   const {
     register,
-    watch,
     handleSubmit,
-    formState: { errors },
-  } = useForm<TSignUpFormValues>({
-    resolver: zodResolver(signUpSchema),
-  });
+    formState: { isSubmitting, errors },
+  } = useFormContext();
+  const { onSubmit, submissionStatus, serverError } =
+    useSignUpContext();
 
-  // Warning: It is not form values context!
-  const { isLoaded, signUp, setActive } = useSignUpContext();
-  const { setSubmittedFormData, setIsSubmitting, isSubmitting } =
-    useSignUpFormContext();
-
-  const router = useRouter();
-
-  const [serverError, setServerError] = useState<ClerkAPIError[] | null>(null);
-
-  // Handle submit
-  const onSubmit = async (data: TSignUpFormValues) => {
-    if (!isLoaded || !signUp) {
-      return;
-    }
-    // Activate loading state of the page.
-    setIsSubmitting(true);
-    try {
-      // await signUp.create({
-        //   emailAddress: data.email,
-        // });
-        // Send email verification code - Prepare OTP.
-
-      // Change this to the desired path where email verification will be handled.
-      router.push("/sign-up/verify-email");
-
-      // Set the submitted form data state for reflecting the data on UI, in the next pages.
-      setSubmittedFormData(data);
-    } catch (err) {
-      const errorMessage = handleClerkError(err);
-      // serverError state will be reflected on the UI, below the submit button.
-      setServerError(errorMessage);
-    }
-  };
-
-  // Email input ref.
   const emailInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Focus emailInputRef.
+  // Focus on the email input field when the component mounts
   useEffect(() => {
     emailInputRef.current?.focus();
   }, []);
 
-  const { ref, ...rest } = register('email');
+  const { ref, ...rest } = register("email");
 
   return (
     <>
@@ -93,37 +61,55 @@ const SignUpForm: React.FC = () => {
                 emailInputRef.current = e;
               }}
             />
-            {/* Password input */}
-            {/* <AnimatedInput
-              id="password"
-              type="password"
-              prompt="Create a password"
-              {...register("password")}
-              placeholder=""
-              error={errors.password?.message}
-              suppressHydrationWarning
-            /> */}
             <div>
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-primary"
+                className={`w-full bg-primary transition-colors ${submissionStatus === SubmissionStatus.Error ? "pulse-once-red" : ""}`}
                 size={"lg"}
               >
-                {!isSubmitting ? (
+                {/* Change the first isSubmitting with isSuccess */}
+                {submissionStatus === SubmissionStatus.Error ? (
                   "Continue with email"
-                ) : (
+                ) : submissionStatus === SubmissionStatus.Success ? (
+                  <Check />
+                ) : submissionStatus === SubmissionStatus.Submitting ? (
                   <CircularLoading size={25} duration={1} stroke="#FFF" />
+                ) : (
+                  "Continue with email"
                 )}
               </Button>
-              {serverError && (
-                <div className="mt-1.5 flex flex-row items-center" role="alert">
-                  <AlertCircleIcon className="mr-1 text-red-600" size={18} />
-                  <p className="text-xs font-medium text-red-600">
-                    {JSON.stringify(serverError)}
-                  </p>
-                </div>
-              )}
+              {/* Server Error container */}
+              {serverError
+                ? serverError.map((error, index) => {
+                    error.message;
+                    return (
+                      <div
+                        className="mt-1.5 flex flex-row items-center"
+                        role="alert"
+                        key={index}
+                      >
+                        <AlertCircleIcon
+                          className="mr-1 text-red-600"
+                          size={18}
+                        />
+                        <p className="text-center text-xs font-medium text-red-600">
+                          {error.message}.
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <span className="text-gray-500">
+                                &nbsp;More info
+                              </span>
+                            </HoverCardTrigger>
+                            <HoverCardContent className="border-neutral-200 bg-white text-neutral-900">
+                              <div>{error.longMessage}</div>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </p>
+                      </div>
+                    );
+                  })
+                : null}
             </div>
           </div>
         </form>

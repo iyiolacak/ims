@@ -7,10 +7,13 @@ const SignUpFormContext = createContext<SignUpFormContextValue | undefined>(
 );
 // Define a type for the context value
 interface SignUpFormContextValue {
+  // You can reflect what user submitted e.g. email string on OTP page
   submittedFormData: Partial<TSignUpFormValues>;
   setSubmittedFormData: React.Dispatch<React.SetStateAction<Partial<TSignUpFormValues>>>;
+  // Disable while data being submitting and sending to API
   isSubmitting: boolean;
   setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>
+  // Make stage global
   stage: number;
   setStage: React.Dispatch<React.SetStateAction<number>>;
   

@@ -1,55 +1,48 @@
 "use client";
 import React from "react";
-import SignUpForm from "./_components/SignUpForm";
-import AnimatedInput from "./_components/AnimatedInput";
-import OAuthSignInButton from "./_components/OAuthSignInButton";
-import { Separator } from "@/components/ui/separator";
-import LegalTOSText from "./_components/LegalTOSText";
-import { useSignUp } from "@clerk/clerk-react";
-import Logo from "@/app/(dashboard)/dashboard/components/Logo";
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
-import SignUpStageIndicator from "./_components/SignUpStageIndicator";
-import Divider from "./_components/Divider";
-import SectionHeader from "./_components/SectionHeader";
-import { useSignUpFormContext } from "@/context/SignUpFormContext";
+import SignUpStageForm from "./_components/SignUpStageForm";
+import { SignUpStage, useSignUpContext } from "@/context/SignUpContext";
+import VerifyEmail from "./verify-email/_components/OTP";
+import { motion, AnimatePresence } from 'framer-motion';
 
-const SignUp = () => {
-  const { isLoaded, signUp } = useSignUp();
-  const { isSubmitting } = useSignUpFormContext();
-  return (
-    <div className="flex h-full w-full flex-col items-center px-4 py-3">
-      <Logo size={48} className="flex items-center py-7" />
-      <SectionHeader
-        title="Create your Einv account."
-        subtitle={
-          <>
-            Sign up in seconds, it&apos;s fast and free.&nbsp;
-            <span className="pt-2 text-neutral-500">
-              No contract required. Hassle-free inventory management.
-            </span>
-          </>
-        }
-      />
-
-      <div className="my-3 grid w-full grid-cols-1 gap-x-2 gap-y-3">
-        {/* Must provide a signUp object from useSignUp which I just created a context for. */}
-        <OAuthSignInButton
-          strategy="oauth_google"
-          className="border bg-white font-semibold"
-          disabled={isSubmitting}
-          
-        />
-      </div>
-      {/* 'Or' divider */}
-      <Divider />
-      {/* Form: Email input and submit button */}
-
-      {/* Must provide a signUp object from useSignUp which I just created a context for. */}
-      <SignUpForm />
-      <LegalTOSText />
-    </div>
-  );
+const transitionVariants = {
+  initial: { opacity: 1, x: 150 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -150 },
 };
 
-export default SignUp;
+const SignUpPage = () => {
+  const { signUpStage } = useSignUpContext();
+  const transitionCubicBezier = [0.05, 0.66 ,0.32 ,0.92]
+  return(
+    <div className="flex w-full h-full">
+
+    <AnimatePresence mode="wait">
+      {signUpStage === SignUpStage.Form && (
+        <motion.div
+        key="form"
+        animate="animate"
+        exit="exit"
+        variants={transitionVariants}
+        transition={{ duration: 0.2, ease: [transitionCubicBezier] }}
+        >
+        <SignUpStageForm />
+        </motion.div>
+      )}
+      {signUpStage === SignUpStage.Verifying && (
+        <motion.div
+        key="verifying"
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={transitionVariants}
+        transition={{ duration: 0.2, ease: [transitionCubicBezier] }}>
+          <VerifyEmail />
+        </motion.div>
+      )}
+    </AnimatePresence>
+      </div>
+  )
+};
+
+export default SignUpPage;

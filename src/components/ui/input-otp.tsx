@@ -6,6 +6,7 @@ import { Dot } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
+
 const InputOTP = React.forwardRef<
   React.ElementRef<typeof OTPInput>,
   React.ComponentPropsWithoutRef<typeof OTPInput>
@@ -36,13 +37,6 @@ const InputOTPSlot = React.forwardRef<
 >(({ index, className, ...props }, ref) => {
   const inputOTPContext = React.useContext(OTPInputContext);
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
-  // Ensure focus is applied correctly
-  React.useEffect(() => {
-    if (isActive && ref && 'current' in ref && ref.current) {
-      (ref.current as HTMLElement).focus();
-    }
-  }, [isActive, ref]);
-
   return (
     <div
       ref={ref}

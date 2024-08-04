@@ -132,6 +132,22 @@
     opacity: 1;
   }
 
+  @keyframes pulse-red {
+    0% {
+      background-color: var(231 100% 47%);
+      
+    }
+    50% {
+      background-color: #dc2626;
+    }
+    100% {
+      background-color: var(231 100% 47%);
+    }
+  }
+  
+  .pulse-once-red {
+    animation: pulse-red 0.7s cubic-bezier(.55,.03,.64,.83);
+  }
 @keyframes pulseGlow {
   0%, 100% {
     box-shadow: 0 0 0px rgba(255, 255, 255, 0.7);

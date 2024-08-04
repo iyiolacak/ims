@@ -12,8 +12,10 @@ export function useUserId() {
   return useContext(UserContext);
 }
 
+
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [userId, setUserId] = useState<UserId>(null);
+
 
   const user = useQuery(api.users.current);
 
