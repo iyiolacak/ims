@@ -3,22 +3,15 @@ import React from "react";
 import SignUpForm from "../_components/SignUpForm";
 import AnimatedInput from "../_components/AnimatedInput";
 import OAuthSignInButton from "../_components/OAuthSignInButton";
-import { Separator } from "@/components/ui/separator";
 import LegalTOSText from "../_components/LegalTOSText";
-import { useSignUp } from "@clerk/clerk-react";
 import Logo from "@/app/(dashboard)/dashboard/components/Logo";
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
-import SignUpStageIndicator from "../_components/SignUpStageIndicator";
 import Divider from "../_components/Divider";
 import SectionHeader from "../_components/SectionHeader";
-import { useSignUpFormContext } from "@/context/SignUpFormContext";
-
-
+import { useSignUpContext } from "@/context/SignUpContext";
+import { AuthState } from "@/hooks/useAuthStatus";
 
 const SignUp = () => {
-  const { isLoaded, signUp } = useSignUp();
-  const { isSubmitting } = useSignUpFormContext();
+  const { authState } = useSignUpContext();
   return (
     <div className="flex h-full w-full flex-col items-center px-4 py-3">
       <Logo size={48} className="flex items-center py-7" />
@@ -35,19 +28,14 @@ const SignUp = () => {
       />
 
       <div className="my-3 grid w-full grid-cols-1 gap-x-2 gap-y-3">
-        {/* Must provide a signUp object from useSignUp which I just created a context for. */}
         <OAuthSignInButton
           strategy="oauth_google"
           className="border bg-white font-semibold"
-          disabled={isSubmitting}
-          
+          disabled={authState === AuthState.Submitting}
         />
       </div>
-      {/* 'Or' divider */}
+      {/* (component) 'Or' divider */}
       <Divider />
-      {/* Form: Email input and submit button */}
-
-      {/* Must provide a signUp object from useSignUp which I just created a context for. */}
       <SignUpForm />
       <LegalTOSText />
     </div>

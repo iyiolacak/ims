@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import AnimatedInput from "./AnimatedInput";
 import { useRouter } from "next/navigation";
 import { CircularLoading } from "respinner";
-import { SubmissionStatus, useSignUpContext } from "@/context/SignUpContext";
+import {
+  SignUpContextValue,
+  SignUpFormValuesType,
+  useSignUpContext,
+} from "@/context/SignUpContext";
 import {
   AlertCircleIcon,
   Check,
@@ -14,11 +18,8 @@ import {
   MessageCircleQuestionIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { AuthState } from "@/hooks/useAuthStatus";
+import ErrorDisplay from "@/app/(dashboard)/dashboard/components/ErrorDisplay";
 
 // To-do
 // - Make custom flow succeed a sign up
@@ -28,93 +29,65 @@ const SignUpForm: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setFocus,
     formState: { isSubmitting, errors },
-  } = useFormContext();
-  const { onSubmit, submissionStatus, serverError } =
-    useSignUpContext();
+  } = useFormContext<SignUpFormValuesType>();
+
+  const {
+    onSignUpFormSubmit,
+    authState,
+    authServerError,
+    shake,
+  }: SignUpContextValue = useSignUpContext();
 
   const emailInputRef = useRef<HTMLInputElement | null>(null);
 
   // Focus on the email input field when the component mounts
   useEffect(() => {
-    emailInputRef.current?.focus();
-  }, []);
-
-  const { ref, ...rest } = register("email");
+    setFocus("email");
+  }, [setFocus]);
 
   return (
-    <>
-      <div className="min-w-full flex-col">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-y-4">
-            <AnimatedInput
-              id="email"
-              type="text"
-              prompt="Enter your email"
-              {...register("email")}
-              placeholder="example@example.com"
+    <div className="min-w-full flex-col">
+      <form onSubmit={handleSubmit(onSignUpFormSubmit)}>
+        <div className="flex flex-col gap-y-4">
+          <AnimatedInput
+            className={`${shake ? "bzzt" : ""}`}
+            id="email"
+            type="text"
+            prompt="Enter your email"
+            {...register("email")}
+            placeholder="example@example.com"
+            disabled={isSubmitting}
+            error={errors.email?.message}
+          />
+          <div>
+            <Button
+              type="submit"
               disabled={isSubmitting}
-              error={errors.email?.message}
-              suppressHydrationWarning
-              ref={(e) => {
-                ref(e);
-                emailInputRef.current = e;
-              }}
-            />
-            <div>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className={`w-full bg-primary transition-colors ${submissionStatus === SubmissionStatus.Error ? "pulse-once-red" : ""}`}
-                size={"lg"}
-              >
-                {/* Change the first isSubmitting with isSuccess */}
-                {submissionStatus === SubmissionStatus.Error ? (
-                  "Continue with email"
-                ) : submissionStatus === SubmissionStatus.Success ? (
-                  <Check />
-                ) : submissionStatus === SubmissionStatus.Submitting ? (
-                  <CircularLoading size={25} duration={1} stroke="#FFF" />
-                ) : (
-                  "Continue with email"
-                )}
-              </Button>
-              {/* Server Error container */}
-              {serverError
-                ? serverError.map((error, index) => {
-                    error.message;
-                    return (
-                      <div
-                        className="mt-1.5 flex flex-row items-center"
-                        role="alert"
-                        key={index}
-                      >
-                        <AlertCircleIcon
-                          className="mr-1 text-red-600"
-                          size={18}
-                        />
-                        <p className="text-center text-xs font-medium text-red-600">
-                          {error.message}.
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <span className="text-gray-500">
-                                &nbsp;More info
-                              </span>
-                            </HoverCardTrigger>
-                            <HoverCardContent className="border-neutral-200 bg-white text-neutral-900">
-                              <div>{error.longMessage}</div>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </p>
-                      </div>
-                    );
-                  })
-                : null}
-            </div>
+              className={cn("w-full bg-primary transition-all", {
+                "bzzt ": shake === true,
+                "pulse-once-red": authState === AuthState.Error,
+              })}
+              size={"lg"}
+            >
+              {/* Change the first isSubmitting with isSuccess */}
+              {authState === AuthState.Error ? (
+                "Continue with email"
+              ) : authState === AuthState.Success ? (
+                <Check />
+              ) : authState === AuthState.Submitting ? (
+                <CircularLoading size={25} duration={1} stroke="#FFF" />
+              ) : (
+                "Continue with email"
+              )}
+            </Button>
+
+            <ErrorDisplay className={"mt-2"} errors={authServerError} />
           </div>
-        </form>
-      </div>
-    </>
+        </div>
+      </form>
+    </div>
   );
 };
 

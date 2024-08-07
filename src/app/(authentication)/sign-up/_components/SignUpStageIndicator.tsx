@@ -1,21 +1,27 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { useSignUpFormContext } from "@/context/SignUpFormContext";
 import { usePathname } from 'next/navigation'
+import { useSignUpContext, SignUpStage } from "@/context/SignUpContext";
+import { AuthStage } from "@/hooks/useAuthStatus";
 
 const SignUpStageIndicator = ({ outOf }: { outOf: number }) => {
-  const { setStage, stage } = useSignUpFormContext();
-  const pathname = usePathname();
-  switch(pathname) {
-    case("/sign-up"):
-    setStage(1);
-    break;
-    case("/sign-up/verify-email"):
-    setStage(2);
-    break;
-  }
+  const { authStage } = useSignUpContext();
+  const [stage, setStage] = useState<number>(1);
+  useEffect(() => {
+
+    switch(authStage) {
+      case(AuthStage.Form):
+      setStage(1);
+      break;
+      case(AuthStage.Verifying):
+      setStage(2);
+      break;
+      default:
+        setStage(1);
+    }
+  }, [authStage])
   // Memoize the filled stages
   const filledStages = useMemo(() => {
     return Array.from({ length: stage }, (_, index) => (

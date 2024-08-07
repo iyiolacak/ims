@@ -1,7 +1,6 @@
 import React from "react";
 import AuthHeader from "./_components/AuthHeader";
 import SignUpPageOtherHalf from "./sign-up/_components/SignUpPageOtherHalf";
-import { SignUpFormProvider } from "@/context/SignUpFormContext";
 import SignUpStageIndicator from "./sign-up/_components/SignUpStageIndicator";
 import { SignUpProvider } from "@/context/SignUpContext";
  
@@ -13,7 +12,6 @@ export const metadata: any = {
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <SignUpProvider>
-      <SignUpFormProvider>
         <div className="flex min-h-screen w-full flex-row">
           {/* add overflow-y-hidden */}
           <div className="flex w-full flex-row">
@@ -28,7 +26,6 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             </div>
           </div>
         </div>
-      </SignUpFormProvider>
     </SignUpProvider>
   );
 };

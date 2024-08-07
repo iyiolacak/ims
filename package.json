@@ -11,7 +11,7 @@
   "dependencies": {
     "@clerk/clerk-js": "^5.8.1",
     "@clerk/clerk-react": "^5.1.0",
-    "@clerk/nextjs": "^5.0.12",
+    "@clerk/nextjs": "^5.2.14",
     "@clerk/types": "^4.2.1",
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
@@ -40,7 +40,7 @@
     "framer-motion": "^11.2.6",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.376.0",
-    "next": "14.2.3",
+    "next": "^14.2.5",
     "prettier-plugin-tailwindcss": "^0.6.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

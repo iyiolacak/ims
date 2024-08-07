@@ -2,7 +2,6 @@
 import React, { useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
 import {
   InputOTP,
   InputOTPGroup,
@@ -10,19 +9,25 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import {
-  OTPCodeSchema,
-  TOTPCode,
+  otpCodeSchema,
+  OTPCodeType,
   useSignUpContext,
 } from "@/context/SignUpContext";
+import ErrorDisplay from "@/app/(dashboard)/dashboard/components/ErrorDisplay";
+import { AuthState } from "@/hooks/useAuthStatus";
+
+// 
+// TODO: The OTP input validation schema will be handled better. 
+// 
 
 const OTPForm = () => {
-  const { onOTPSubmit } = useSignUpContext();
+  const { onOTPSubmit, authState, authServerError, shake } = useSignUpContext();
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<TOTPCode>({
-    resolver: zodResolver(OTPCodeSchema),
+  } = useForm<OTPCodeType>({
+    resolver: zodResolver(otpCodeSchema),
   });
 
   const OTPInputRef = useRef<HTMLInputElement | null>(null);
@@ -31,9 +36,17 @@ const OTPForm = () => {
     OTPInputRef.current?.focus();
   }, []);
 
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Handler function to trigger form submission programmatically
+  const handleOTPComplete = () => {
+    if (formRef.current) {
+      formRef.current.submit();
+    }
+  };
   return (
-    <form onSubmit={handleSubmit(onOTPSubmit)}>
-      <div className="flex items-center justify-center">
+    <form ref={formRef} onSubmit={handleSubmit(onOTPSubmit)}>
+      <div className={`flex items-center justify-center ${shake ? "bzzt" : ""}`}>
         <Controller
           name="OTPCode"
           control={control}
@@ -43,19 +56,20 @@ const OTPForm = () => {
               maxLength={6}
               value={value}
               onChange={onChange}
-              onComplete={(data) => console.log(data)}
+              // onComplete={handleOTPComplete}
               ref={OTPInputRef}
+              disabled={authState === AuthState.Submitting}
             >
               <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
+                <InputOTPSlot index={0} className={shake ? "bzzt" : ""} />
+                <InputOTPSlot index={1} className={shake ? "bzzt" : ""}/>
+                <InputOTPSlot index={2} className={shake ? "bzzt" : ""}/>
               </InputOTPGroup>
               <InputOTPSeparator />
               <InputOTPGroup>
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-                <InputOTPSlot index={5} />
+                <InputOTPSlot index={3} className={shake ? "bzzt" : ""}/>
+                <InputOTPSlot index={4} className={shake ? "bzzt" : ""}/>
+                <InputOTPSlot index={5} className={shake ? "bzzt" : ""}/>
               </InputOTPGroup>
             </InputOTP>
           )}
@@ -64,6 +78,7 @@ const OTPForm = () => {
       {errors.OTPCode && (
         <p className="text-red-500">{errors.OTPCode.message}</p>
       )}
+      <ErrorDisplay alertIcon={false} className="flex justify-center" errors={authServerError} />
     </form>
   );
 };

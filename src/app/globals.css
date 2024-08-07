@@ -132,6 +132,46 @@
     opacity: 1;
   }
 
+  /*  */
+  /* OTP attempt error animation: SHAKE */
+  /*  */
+  @keyframes bzzt {
+    0%, 100% { transform: translateX(0); }
+    15%, 45%, 75% { transform: translateX(-2px); }
+    30%, 60%, 90% { transform: translateX(2px); }
+  }
+    
+  .bzzt {
+    animation: bzzt 0.4s cubic-bezier(0.23, 1, 0.32, 1), pulse-red-text 0.7s ease-in-out;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .bzzt {
+      animation: redPulse 1s infinite;
+      filter: none;
+    }
+  }
+  @keyframes pulse-red-text {
+    0% {
+      color: inherit;
+      
+    }
+    50% {
+      color: #dc2626;
+    }
+    100% {
+      color: inherit;
+    }
+  }
+  
+  .pulse-once-red-text {
+    animation: pulse-red-text 0.7s cubic-bezier(.55,.03,.64,.83);
+  }
+
+        /*  */
+  /* Pulse red for button */
+  /*  */
+
   @keyframes pulse-red {
     0% {
       background-color: var(231 100% 47%);

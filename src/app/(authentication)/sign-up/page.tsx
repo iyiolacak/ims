@@ -4,6 +4,8 @@ import SignUpStageForm from "./_components/SignUpStageForm";
 import { SignUpStage, useSignUpContext } from "@/context/SignUpContext";
 import VerifyEmail from "./verify-email/_components/OTP";
 import { motion, AnimatePresence } from 'framer-motion';
+import { AuthStage } from "@/hooks/useAuthStatus";
+import { SignUpButton } from "@clerk/nextjs";
 
 const transitionVariants = {
   initial: { opacity: 1, x: 150 },
@@ -12,13 +14,12 @@ const transitionVariants = {
 };
 
 const SignUpPage = () => {
-  const { signUpStage } = useSignUpContext();
+  const { authStage } = useSignUpContext();
   const transitionCubicBezier = [0.05, 0.66 ,0.32 ,0.92]
   return(
     <div className="flex w-full h-full">
-
     <AnimatePresence mode="wait">
-      {signUpStage === SignUpStage.Form && (
+      {authStage === AuthStage.Form && (
         <motion.div
         key="form"
         animate="animate"
@@ -29,7 +30,7 @@ const SignUpPage = () => {
         <SignUpStageForm />
         </motion.div>
       )}
-      {signUpStage === SignUpStage.Verifying && (
+      {authStage === AuthStage.Verifying && (
         <motion.div
         key="verifying"
         initial="initial"

@@ -1,13 +1,12 @@
 "use client";
 import OTPForm from "./OTPForm";
-import { useSignUpFormContext } from "@/context/SignUpFormContext";
 import { PencilLine } from "lucide-react";
 import SignUpStageIndicator from "../../_components/SignUpStageIndicator";
 
 const VerifyEmail = () => {
 
-  
-  const { submittedFormData } = useSignUpFormContext();
+  // IMPORTANT: Replace submittedFormData with good data from useSignUpContext();
+  // const { submittedFormData } = useSignUpFormContext();
   return (
     <div className="flex h-full w-full   px-4">
       <div className="flex w-full flex-col h-full">
@@ -21,7 +20,8 @@ const VerifyEmail = () => {
               <h3 className="text-[16px] scroll-m-20 font-normal tracking-tight md:mt-4">
                 Enter the security code we sent to
                 <span className="inline-flex cursor-pointer items-center rounded-md px-1 font-medium text-primary hover:bg-blue-100">
-                  {submittedFormData.email}
+                  {/* REPLACE THIS DATA WITH SUBMITTED FORM EMAIL DATA FROM useSignUpContext() */}
+                  {/* {submittedFormData.email} */}
                   <PencilLine className="ml-0.5" size={20} />
                 </span>
               </h3>
