@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import SignUpStageForm from "./_components/SignUpStageForm";
-import { SignUpStage, useSignUpContext } from "@/context/SignUpContext";
+import { SignUpStage, useSignUpContext } from "@/context/BaseAuthContext";
 import VerifyEmail from "./verify-email/_components/OTP";
 import { motion, AnimatePresence } from 'framer-motion';
 import { AuthStage } from "@/hooks/useAuthStatus";
@@ -17,7 +17,7 @@ const SignUpPage = () => {
   const { authStage } = useSignUpContext();
   const transitionCubicBezier = [0.05, 0.66 ,0.32 ,0.92]
   return(
-    <div className="flex w-full h-full">
+    <div className="">
     <AnimatePresence mode="wait">
       {authStage === AuthStage.Form && (
         <motion.div

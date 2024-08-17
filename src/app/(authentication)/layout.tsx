@@ -2,7 +2,7 @@ import React from "react";
 import AuthHeader from "./_components/AuthHeader";
 import SignUpPageOtherHalf from "./sign-up/_components/SignUpPageOtherHalf";
 import SignUpStageIndicator from "./sign-up/_components/SignUpStageIndicator";
-import { SignUpProvider } from "@/context/SignUpContext";
+import { SignUpProvider } from "@/context/BaseAuthContext";
  
 export const metadata: any = {
   title: "Einv | Create your account",
@@ -15,8 +15,8 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="flex min-h-screen w-full flex-row">
           {/* add overflow-y-hidden */}
           <div className="flex w-full flex-row">
-            <div className="flex h-full lg:w-1/2">
-              <div className="mx-auto flex max-w-lg flex-col">
+            <div className="flex min-h-full lg:w-1/2">
+              <div className="flex min-h-full w-full justify-between mx-auto max-w-lg flex-col">
                 {children}
                 <SignUpStageIndicator outOf={3} />
               </div>

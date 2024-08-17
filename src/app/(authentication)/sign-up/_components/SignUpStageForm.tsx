@@ -7,13 +7,13 @@ import LegalTOSText from "../_components/LegalTOSText";
 import Logo from "@/app/(dashboard)/dashboard/components/Logo";
 import Divider from "../_components/Divider";
 import SectionHeader from "../_components/SectionHeader";
-import { useSignUpContext } from "@/context/SignUpContext";
+import { useSignUpContext } from "@/context/BaseAuthContext";
 import { AuthState } from "@/hooks/useAuthStatus";
 
 const SignUp = () => {
   const { authState } = useSignUpContext();
   return (
-    <div className="flex h-full w-full flex-col items-center px-4 py-3">
+    <div className="flex flex-col items-center px-4 py-3">
       <Logo size={48} className="flex items-center py-7" />
       <SectionHeader
         title="Create your Einv account."

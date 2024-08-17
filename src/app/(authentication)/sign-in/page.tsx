@@ -1,8 +1,11 @@
 import React from 'react'
+import SignInPage from './_components/SignInPage'
 
 const SignIn = () => {
   return (
-    <div className='max-w-lg mx-auto bg-blue-200 h-full'>SignIn</div>
+    <div className='flex w-full h-full'>
+      <SignInPage/>
+            </div>
   )
 }
 

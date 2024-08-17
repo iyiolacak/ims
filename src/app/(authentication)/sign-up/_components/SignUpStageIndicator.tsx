@@ -1,28 +1,23 @@
 "use client";
-
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { usePathname } from 'next/navigation'
-import { useSignUpContext, SignUpStage } from "@/context/SignUpContext";
+import { useSignUpContext } from "@/context/BaseAuthContext";
 import { AuthStage } from "@/hooks/useAuthStatus";
 
 const SignUpStageIndicator = ({ outOf }: { outOf: number }) => {
   const { authStage } = useSignUpContext();
   const [stage, setStage] = useState<number>(1);
-  useEffect(() => {
 
+  useEffect(() => {
     switch(authStage) {
-      case(AuthStage.Form):
-      setStage(1);
-      break;
       case(AuthStage.Verifying):
-      setStage(2);
-      break;
+        setStage(prev => Math.max(prev, 2));  // Move to stage 2 if not already there
+        break;
       default:
         setStage(1);
     }
-  }, [authStage])
-  // Memoize the filled stages
+  }, [authStage]);
+
   const filledStages = useMemo(() => {
     return Array.from({ length: stage }, (_, index) => (
       <div
@@ -43,7 +38,6 @@ const SignUpStageIndicator = ({ outOf }: { outOf: number }) => {
     ));
   }, [stage]);
 
-  // Memoize the entire indicator list
   const indicators = useMemo(() => {
     return (
       <div className="flex w-full flex-row space-x-2 mb-4">

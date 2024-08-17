@@ -2,11 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { useSignUp } from "@clerk/nextjs";
-import { OAuthStrategy, SignUpResource } from "@clerk/types";
+import { OAuthStrategy } from "@clerk/types";
 import React from "react";
-import { useState } from "react";
 import { oauthMapping } from "./oauthMapping";
-import { useSignUpContext } from "@/context/SignUpContext";
+import { useSignUpContext } from "@/context/BaseAuthContext";
+import ErrorDisplay from "@/app/(dashboard)/dashboard/components/ErrorDisplay";
+import { AuthState } from "@/hooks/useAuthStatus";
+import LoadingCircle from "./LoadingCircle";
+
 type OAuthButtonProps = {
   strategy: OAuthStrategy;
   className?: string;
@@ -19,28 +22,24 @@ const OAuthSignInButton: React.FC<OAuthButtonProps> = ({
   disabled,
 }) => {
   const mapping = oauthMapping[strategy];
-  const { signUp } = useSignUpContext();
-  const signInWith = (strategy: OAuthStrategy) => {
-    if (signUp) {
-      return signUp.authenticateWithRedirect({
-        strategy,
-        redirectUrl: "/sign-up/sso-callback",
-        redirectUrlComplete: "/",
-      });
-    }
-  };
+  const { handleOAuthClick, oauthServerError, authState } = useSignUpContext();
 
   return (
-    <Button
-      variant="secondary"
-      className={`${className}`}
-      size={"lg"}
-      onClick={() => signInWith(strategy)}
-      disabled={disabled}
-    >
-      {/* {mapping?.name || "Sign In"} */}
-      Continue with {mapping?.name}
-    </Button>
+    <>
+      <Button
+        variant="secondary"
+        className={`${className} `}
+        size={"lg"}
+        onClick={() => handleOAuthClick(strategy)}
+        disabled={disabled}
+      >
+        {authState === AuthState.Submitting ?
+        <LoadingCircle color="#000" /> :
+        `Continue with ${mapping?.name}`
+        }
+      </Button>
+      {oauthServerError && <ErrorDisplay errors={oauthServerError} />}
+    </>
   );
 };
 

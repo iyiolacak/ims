@@ -12,7 +12,7 @@ import {
   otpCodeSchema,
   OTPCodeType,
   useSignUpContext,
-} from "@/context/SignUpContext";
+} from "@/context/BaseAuthContext";
 import ErrorDisplay from "@/app/(dashboard)/dashboard/components/ErrorDisplay";
 import { AuthState } from "@/hooks/useAuthStatus";
 

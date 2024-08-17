@@ -6,18 +6,16 @@ const LegalTOSText = () => {
     <p className="mt-4 flex flex-row px-4 text-center text-sm text-gray-400">
       <Link
         href="/terms-of-service"
-        className="flex flex-row items-center font-medium text-primary"
+        className="flex flex-row items-center text-blue-700"
       >
         Terms of Service
-        <ArrowUpRight size={16} />
       </Link>{" "}
-      and&nbsp;
+      &nbsp;and&nbsp;
       <Link
         href={"/privacy-policy"}
-        className="flex flex-row items-center font-medium text-primary"
+        className="flex flex-row items-center text-blue-700"
       >
         Privacy Policy
-        <ArrowUpRight size={16} />
       </Link>
       .
     </p>

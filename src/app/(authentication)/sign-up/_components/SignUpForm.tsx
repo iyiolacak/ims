@@ -9,7 +9,7 @@ import {
   SignUpContextValue,
   SignUpFormValuesType,
   useSignUpContext,
-} from "@/context/SignUpContext";
+} from "@/context/BaseAuthContext";
 import {
   AlertCircleIcon,
   Check,
@@ -20,6 +20,7 @@ import {
 import { cn } from "@/lib/utils";
 import { AuthState } from "@/hooks/useAuthStatus";
 import ErrorDisplay from "@/app/(dashboard)/dashboard/components/ErrorDisplay";
+import LoadingCircle from "./LoadingCircle";
 
 // To-do
 // - Make custom flow succeed a sign up
@@ -77,7 +78,7 @@ const SignUpForm: React.FC = () => {
               ) : authState === AuthState.Success ? (
                 <Check />
               ) : authState === AuthState.Submitting ? (
-                <CircularLoading size={25} duration={1} stroke="#FFF" />
+                <LoadingCircle />
               ) : (
                 "Continue with email"
               )}
