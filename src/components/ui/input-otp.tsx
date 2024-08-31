@@ -33,16 +33,19 @@ InputOTPGroup.displayName = "InputOTPGroup";
 
 const InputOTPSlot = React.forwardRef<
   React.ElementRef<"div">,
-  React.ComponentPropsWithoutRef<"div"> & { index: number }
->(({ index, className, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<"div"> & { index: number; shake?: boolean; error?: boolean }
+>(({ index, shake = false, error = false, className, ...props}, ref) => {
   const inputOTPContext = React.useContext(OTPInputContext);
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
+  
   return (
     <div
       ref={ref}
       className={cn(
-        "relative mx-[2px] flex size-16 items-center justify-center rounded-3xl border border-input text-xl transition-all",
+        "relative mx-[2px] flex size-16 items-center justify-center rounded-3xl border text-xl transition-all",
         isActive && "z-10 ring-2 ring-ring ring-offset-background",
+        error ? "border-red-600" : "border-input", // Red border on error
+        shake && "animate-shake", // Shake effect
         className,
       )}
       {...props}

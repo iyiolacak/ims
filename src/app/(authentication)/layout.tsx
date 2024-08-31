@@ -1,8 +1,8 @@
 import React from "react";
 import AuthHeader from "./_components/AuthHeader";
 import SignUpPageOtherHalf from "./sign-up/_components/SignUpPageOtherHalf";
-import SignUpStageIndicator from "./sign-up/_components/SignUpStageIndicator";
-import { SignUpProvider } from "@/context/BaseAuthContext";
+import AuthStageIndicator from "./sign-up/_components/SignUpStageIndicator";
+import { AuthProvider } from "@/context/AuthContext";
  
 export const metadata: any = {
   title: "Einv | Create your account",
@@ -11,22 +11,23 @@ export const metadata: any = {
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SignUpProvider>
-        <div className="flex min-h-screen w-full flex-row">
-          {/* add overflow-y-hidden */}
-          <div className="flex w-full flex-row">
-            <div className="flex min-h-full lg:w-1/2">
-              <div className="flex min-h-full w-full justify-between mx-auto max-w-lg flex-col">
-                {children}
-                <SignUpStageIndicator outOf={3} />
-              </div>
-            </div>
-            <div className="hidden lg:block lg:w-1/2">
-              <SignUpPageOtherHalf />
+    <AuthProvider>
+      <div className="flex min-h-screen w-full flex-row overflow-hidden">
+        <div className="flex flex-col md:flex-row flex-1">
+          {/* Left Side */}
+          <div className="flex w-full flex-1 justify-center items-center p-4 md:p-8 md:pb-4">
+            <div className="flex flex-col h-full justify-between w-full max-w-lg">
+              {children}
+              <AuthStageIndicator outOf={3} />
             </div>
           </div>
+          {/* Right Side */}
+          <div className="hidden lg:flex lg:w-1/2 items-center justify-center">
+            <SignUpPageOtherHalf />
+          </div>
         </div>
-    </SignUpProvider>
+      </div>
+    </AuthProvider>
   );
 };
 

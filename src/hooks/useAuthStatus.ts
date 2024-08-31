@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ClerkAPIError } from "@clerk/types";
+import { SignUpFormValuesType } from "@/context/AuthContext";
 
 export enum AuthState {
   Idle = "Idle",
@@ -14,6 +15,8 @@ export enum AuthStage {
   Completed = "Completed",
 }
 
+export type AuthFormValuesType = SignUpFormValuesType;
+
 type UseAuthStatusReturn = {
   authState: AuthState;
   authServerError: ClerkAPIError[] | undefined;
@@ -25,7 +28,12 @@ type UseAuthStatusReturn = {
   oauthServerError: ClerkAPIError[] | undefined;
   setStage: (stage: AuthStage) => void;
   resetSubmittingState: () => void;
-  shake: boolean;
+  resetAuth: () => void;
+  shakeState: Record<string, boolean>;
+  triggerShake: (field: string) => void;
+  resetShake: (field: string) => void;
+  setSubmittedData: (submittedData: AuthFormValuesType | undefined) => void;
+  submittedData: AuthFormValuesType | undefined;
 };
 
 /**
@@ -42,11 +50,25 @@ export const useAuthStatus = (): UseAuthStatusReturn => {
     ClerkAPIError[] | undefined
   >(undefined);
   const [authStage, setAuthStage] = useState<AuthStage>(AuthStage.Form);
-  const [shake, setShake] = useState<boolean>(false);
+  const [shakeState, setShakeState] = useState<Record<string, boolean>>({});
+  const [submittedData, setSubmittedData] = useState<AuthFormValuesType | undefined>(undefined);
 
-  const triggerShake = () => {
-    setShake(true);
-    setTimeout(() => setShake(false), 500);
+  /**
+   * Triggers a visual shake effect for a specific field.
+   */
+  const triggerShake = (field: string) => {
+    setShakeState((prevState) => ({
+      ...prevState,
+      [field]: true,
+    }));
+    setTimeout(() => resetShake(field), 500);
+  };
+
+  const resetShake = (field: string) => {
+    setShakeState((prevState) => ({
+      ...prevState,
+      [field]: false,
+    }));
   };
 
   const startSubmission = () => {
@@ -54,26 +76,48 @@ export const useAuthStatus = (): UseAuthStatusReturn => {
     setAuthServerError(undefined);
     setOAuthServerError(undefined);
   };
+
   const markSuccess = () => {
     setAuthState(AuthState.Success);
-    setAuthServerError(undefined);
-    setOAuthServerError(undefined);
   };
+
   const handleServerError = (errors: ClerkAPIError[]) => {
     setAuthState(AuthState.Error);
-    setAuthServerError(errors);
-    triggerShake();
+    setAuthServerError([...errors]);
+
+    // Trigger shake for each error field
+    errors.forEach((error) => {
+      const field = error.code; // Assuming 'code' represents the field
+      triggerShake(field);
+    });
   };
+
   const handleOAuthServerError = (errors: ClerkAPIError[]) => {
     setAuthState(AuthState.Error);
     setOAuthServerError(errors);
-    triggerShake();
+
+    // Trigger shake for OAuth-specific error
+    errors.forEach((error) => {
+      const field = error.code; // Assuming 'code' represents the field
+      triggerShake(field);
+    });
   };
+
   const setStage = (stage: AuthStage) => {
     setAuthStage(stage);
   };
+
   const resetSubmittingState = () => {
     setAuthState(AuthState.Idle);
+  };
+
+  const resetAuth = () => {
+    setAuthState(AuthState.Idle);
+    setOAuthServerError(undefined);
+    setAuthServerError(undefined);
+    setShakeState({});
+    setStage(AuthStage.Form);
+    setSubmittedData(undefined);
   };
 
   return {
@@ -87,6 +131,11 @@ export const useAuthStatus = (): UseAuthStatusReturn => {
     setStage,
     authStage,
     resetSubmittingState,
-    shake,
+    resetAuth,
+    shakeState,
+    triggerShake,
+    resetShake,
+    setSubmittedData,
+    submittedData,
   };
 };

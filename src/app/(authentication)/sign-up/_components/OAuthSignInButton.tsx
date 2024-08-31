@@ -5,10 +5,11 @@ import { useSignUp } from "@clerk/nextjs";
 import { OAuthStrategy } from "@clerk/types";
 import React from "react";
 import { oauthMapping } from "./oauthMapping";
-import { useSignUpContext } from "@/context/BaseAuthContext";
+import { useAuthContext } from "@/context/AuthContext";
 import ErrorDisplay from "@/app/(dashboard)/dashboard/components/ErrorDisplay";
-import { AuthState } from "@/hooks/useAuthStatus";
+import { AuthState, useAuthStatus } from "@/hooks/useAuthStatus";
 import LoadingCircle from "./LoadingCircle";
+import useOAuthHandler from "@/hooks/useOAuthHandler";
 
 type OAuthButtonProps = {
   strategy: OAuthStrategy;
@@ -22,7 +23,8 @@ const OAuthSignInButton: React.FC<OAuthButtonProps> = ({
   disabled,
 }) => {
   const mapping = oauthMapping[strategy];
-  const { handleOAuthClick, oauthServerError, authState } = useSignUpContext();
+  const { oauthServerError, authState } = useAuthStatus();
+  const handleOAuthClick = useOAuthHandler();
 
   return (
     <>

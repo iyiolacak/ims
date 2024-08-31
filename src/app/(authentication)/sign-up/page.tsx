@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import SignUpStageForm from "./_components/SignUpStageForm";
-import { SignUpStage, useSignUpContext } from "@/context/BaseAuthContext";
+import { useAuthContext } from "@/context/AuthContext";
 import VerifyEmail from "./verify-email/_components/OTP";
 import { motion, AnimatePresence } from 'framer-motion';
-import { AuthStage } from "@/hooks/useAuthStatus";
+import { AuthStage, useAuthStatus } from "@/hooks/useAuthStatus";
 import { SignUpButton } from "@clerk/nextjs";
 
 const transitionVariants = {
@@ -14,10 +14,10 @@ const transitionVariants = {
 };
 
 const SignUpPage = () => {
-  const { authStage } = useSignUpContext();
+  const { authStage } = useAuthContext();
   const transitionCubicBezier = [0.05, 0.66 ,0.32 ,0.92]
   return(
-    <div className="">
+    <div className="h-full">
     <AnimatePresence mode="wait">
       {authStage === AuthStage.Form && (
         <motion.div
@@ -37,7 +37,8 @@ const SignUpPage = () => {
         animate="animate"
         exit="exit"
         variants={transitionVariants}
-        transition={{ duration: 0.2, ease: [transitionCubicBezier] }}>
+        transition={{ duration: 0.2, ease: [transitionCubicBezier] }}
+        className="h-full">
           <VerifyEmail />
         </motion.div>
       )}

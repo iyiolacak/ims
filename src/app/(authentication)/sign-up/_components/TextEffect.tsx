@@ -1,7 +1,9 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-const splitText = (text: string) => text.split("");
+const splitTextToWordsAndCharacters = (text: string) => {
+  return text.split(" ").map((word) => word.split(""));
+};
 
 const characterVariants = {
   hidden: { opacity: 0, y: -20, filter: "blur(3px)" },
@@ -20,31 +22,38 @@ const characterVariants = {
 };
 
 const TextEffect = ({ text }: { text: string }) => {
-  const characters = splitText(text);
+  const wordsAndCharacters = splitTextToWordsAndCharacters(text);
 
   return (
-    <div>
-      <span className="sr-only">
-        {text}
-      </span>
-      {characters.map((char: string, index: number) => {
-        return (
-          <motion.span
-            aria-hidden
-            key={`${char}-${index}`}
-            initial="hidden"
-            animate="visible"
-            custom={index}
-            variants={characterVariants}
-            style={{
-              display: "inline-block",
-              whiteSpace: "pre", // Ensure spaces are rendered
-            }}
-          >
-            {char}
+    <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+      <span className="sr-only">{text}</span>
+      {wordsAndCharacters.map((word, wordIndex) => (
+        <span
+          key={`word-${wordIndex}`}
+          style={{ display: "inline-block", whiteSpace: "nowrap" }} // Ensure word stays together
+        >
+          {word.map((char, charIndex) => (
+            <motion.span
+              aria-hidden
+              key={`char-${wordIndex}-${charIndex}`}
+              initial="hidden"
+              animate="visible"
+              custom={wordIndex * word.length + charIndex} // Adjust delay based on word and char position
+              variants={characterVariants}
+              style={{
+                display: "inline-block",
+                whiteSpace: "pre", // Maintain spaces
+              }}
+            >
+              {char}
+            </motion.span>
+          ))}
+          {/* Space between words */}
+          <motion.span aria-hidden style={{ display: "inline-block", width: "1rem" }}>
+          &nbsp;
           </motion.span>
-        );
-      })}
+        </span>
+      ))}
     </div>
   );
 };

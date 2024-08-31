@@ -1,5 +1,3 @@
-
-
 type UserResource = {
     id: string;
     externalId: string | null;

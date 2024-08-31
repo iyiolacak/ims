@@ -3,7 +3,7 @@ import { AlertCircleIcon } from "lucide-react";
 import { ClerkAPIError } from "@clerk/types";
 
 interface ErrorDisplayProps {
-  errors: ClerkAPIError[] | undefined;
+  errors: ClerkAPIError[] | string | undefined;
   className?: string;
   alertIcon?: boolean;
 }
@@ -13,29 +13,26 @@ const ErrorDisplay = ({
   className,
   alertIcon = true,
 }: ErrorDisplayProps) => {
-  if (!errors || errors.length === 0) return null;
+  if (!errors) return null;
+
+  const renderError = (error: ClerkAPIError | string, index: number) => (
+    <div
+      key={index}
+      className="flex flex-row items-center p-2 text-red-600"
+    >
+      {alertIcon && <AlertCircleIcon className="mr-2" size={18} />}
+      <p className="text-sm font-medium">
+        {typeof error === 'string' ? error : error.longMessage || error.message}
+      </p>
+    </div>
+  );
 
   return (
-    <>
-      {/* Server Error container */}
-      {errors?.map((error, index) => (
-        <div
-          key={index}
-          className={`group flex flex-row items-start rounded-lg p-1 text-start ${className}`}
-          role="alert"
-        >
-          {alertIcon && (
-            <AlertCircleIcon
-              className="mr-1 text-red-600 group-hover:text-red-500"
-              size={18}
-            />
-          )}
-          <p className="flex items-center text-start text-xs font-medium text-red-600">
-            {error.longMessage ? error.longMessage : error.message}
-          </p>
-        </div>
-      ))}
-    </>
+    <div className={`flex flex-col space-y-1 ${className}`}>
+      {Array.isArray(errors)
+        ? errors.map((error, index) => renderError(error, index))
+        : renderError(errors, 0)}
+    </div>
   );
 };
 

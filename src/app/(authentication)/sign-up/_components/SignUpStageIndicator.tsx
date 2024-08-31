@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { useSignUpContext } from "@/context/BaseAuthContext";
+import { useAuthContext } from "@/context/AuthContext";
 import { AuthStage } from "@/hooks/useAuthStatus";
 
-const SignUpStageIndicator = ({ outOf }: { outOf: number }) => {
-  const { authStage } = useSignUpContext();
+const AuthStageIndicator = ({ outOf }: { outOf: number }) => {
+  const { authStage } = useAuthContext();
   const [stage, setStage] = useState<number>(1);
 
   useEffect(() => {
@@ -55,4 +55,4 @@ const SignUpStageIndicator = ({ outOf }: { outOf: number }) => {
   return indicators;
 };
 
-export default SignUpStageIndicator;
+export default AuthStageIndicator;

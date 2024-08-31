@@ -6,11 +6,6 @@ import AnimatedInput from "./AnimatedInput";
 import { useRouter } from "next/navigation";
 import { CircularLoading } from "respinner";
 import {
-  SignUpContextValue,
-  SignUpFormValuesType,
-  useSignUpContext,
-} from "@/context/BaseAuthContext";
-import {
   AlertCircleIcon,
   Check,
   CircleX,
@@ -18,32 +13,30 @@ import {
   MessageCircleQuestionIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AuthState } from "@/hooks/useAuthStatus";
+import { AuthState, useAuthStatus } from "@/hooks/useAuthStatus";
 import ErrorDisplay from "@/app/(dashboard)/dashboard/components/ErrorDisplay";
 import LoadingCircle from "./LoadingCircle";
+import {
+  useAuthContext,
+  AuthContextValue,
+  SignUpFormValuesType,
+} from "@/context/AuthContext";
 
 // To-do
 // - Make custom flow succeed a sign up
 // - Animation between route - first page will have end animation, second page will have start. DONE.
 
 const SignUpForm: React.FC = () => {
+  const { authState, authServerError } = useAuthContext();
   const {
     register,
     handleSubmit,
     setFocus,
     formState: { isSubmitting, errors },
   } = useFormContext<SignUpFormValuesType>();
-
-  const {
-    onSignUpFormSubmit,
-    authState,
-    authServerError,
-    shake,
-  }: SignUpContextValue = useSignUpContext();
-
-  const emailInputRef = useRef<HTMLInputElement | null>(null);
-
+  const { onSignUpFormSubmit }: AuthContextValue = useAuthContext();
   // Focus on the email input field when the component mounts
+
   useEffect(() => {
     setFocus("email");
   }, [setFocus]);
@@ -53,26 +46,23 @@ const SignUpForm: React.FC = () => {
       <form onSubmit={handleSubmit(onSignUpFormSubmit)}>
         <div className="flex flex-col gap-y-4">
           <AnimatedInput
-            className={`${shake ? "bzzt" : ""}`}
             id="email"
             type="text"
             prompt="Enter your email"
             {...register("email")}
             placeholder="example@example.com"
-            disabled={isSubmitting}
-            error={errors.email?.message}
+            disabled={authState === AuthState.Submitting}
+            error={errors.email?.message} // Input validation error
           />
           <div>
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={authState === AuthState.Submitting}
               className={cn("w-full bg-primary transition-all", {
-                "bzzt ": shake === true,
                 "pulse-once-red": authState === AuthState.Error,
               })}
               size={"lg"}
             >
-              {/* Change the first isSubmitting with isSuccess */}
               {authState === AuthState.Error ? (
                 "Continue with email"
               ) : authState === AuthState.Success ? (
@@ -83,7 +73,6 @@ const SignUpForm: React.FC = () => {
                 "Continue with email"
               )}
             </Button>
-
             <ErrorDisplay className={"mt-2"} errors={authServerError} />
           </div>
         </div>
