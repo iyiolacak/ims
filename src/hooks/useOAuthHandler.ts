@@ -4,16 +4,14 @@ import { useSignUp } from "@clerk/clerk-react";
 import { OAuthStrategy } from "@clerk/types";
 
 export const useOAuthHandler = () => {
+  const { startSubmission, markSuccess, handleOAuthServerError, resetAuth } = useAuthStatus();
+  const { signUp } = useSignUp();
+
   const handleOAuthClick = async (strategy: OAuthStrategy) => {
-    const {
-      authState,
-      startSubmission,
-      markSuccess,
-      handleOAuthServerError,
-      resetAuth,
-    } = useAuthStatus();
-    const { signUp } = useSignUp();
-    if (!signUp) return; // ensure this check is intentional
+    if (!signUp) {
+      console.error("SignUp context is unavailable."); // Add more descriptive error logging
+      return;
+    }
 
     try {
       startSubmission();
@@ -27,6 +25,8 @@ export const useOAuthHandler = () => {
       const clerkErrors = getClerkError(err);
       if (clerkErrors) {
         handleOAuthServerError(clerkErrors);
+      } else {
+        console.error("Unhandled error during OAuth sign-up:", err);
       }
     } finally {
       resetAuth();
