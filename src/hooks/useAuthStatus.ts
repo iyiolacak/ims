@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ClerkAPIError } from "@clerk/types";
-import { SignUpFormValuesType } from "@/context/AuthContext";
+import { EmailForm } from "@/context/AuthContext";
 
 export enum AuthState {
   Idle = "Idle",
@@ -15,7 +15,7 @@ export enum AuthStage {
   Completed = "Completed",
 }
 
-export type AuthFormValuesType = SignUpFormValuesType;
+export type AuthFormValuesType = EmailForm;
 
 type UseAuthStatusReturn = {
   authState: AuthState;

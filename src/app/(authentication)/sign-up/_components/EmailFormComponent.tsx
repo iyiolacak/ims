@@ -19,21 +19,23 @@ import LoadingCircle from "./LoadingCircle";
 import {
   useAuthContext,
   AuthContextValue,
-  SignUpFormValuesType,
+  EmailForm,
+  AuthAction,
 } from "@/context/AuthContext";
 
-// To-do
-// - Make custom flow succeed a sign up
-// - Animation between route - first page will have end animation, second page will have start. DONE.
 
-const SignUpForm: React.FC = () => {
+interface EmailFormProps {
+  authAction: AuthAction;
+}
+
+const EmailFormComponent: React.FC<EmailFormProps> = ({ authAction }) => {
   const { authState, authServerError } = useAuthContext();
   const {
     register,
     handleSubmit,
     setFocus,
-    formState: { isSubmitting, errors },
-  } = useFormContext<SignUpFormValuesType>();
+    formState: { errors },
+  } = useFormContext<EmailForm>();
   const { onSignUpFormSubmit }: AuthContextValue = useAuthContext();
   // Focus on the email input field when the component mounts
 
@@ -81,4 +83,4 @@ const SignUpForm: React.FC = () => {
   );
 };
 
-export default SignUpForm;
+export default EmailFormComponent;

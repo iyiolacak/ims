@@ -1,14 +1,29 @@
 "use client";
 import React from "react";
-import SignUpForm from "../_components/SignUpForm";
-import AnimatedInput from "../_components/AnimatedInput";
+import EmailFormComponent from "./EmailFormComponent";
 import OAuthSignInButton from "../_components/OAuthSignInButton";
 import LegalTOSText from "../_components/LegalTOSText";
 import Logo from "@/app/(dashboard)/dashboard/components/Logo";
 import Divider from "../_components/Divider";
 import SectionHeader from "../_components/SectionHeader";
-import { useAuthContext } from "@/context/AuthContext";
 import { useAuthStatus, AuthState } from "@/hooks/useAuthStatus";
+import Link from 'next/link';
+import { ArrowUpRight } from "lucide-react";
+
+function RedirectToSignIn() {
+  return (
+    <div className="mt-5">
+      <p className="flex flex-row text-sm">
+        You have an account?&nbsp;
+        <Link href={"/sign-in"}>
+        <button className="text-primary hover:underline flex flex-row px-0.5">
+          Sign in to your account <ArrowUpRight size={16} />
+        </button>
+        </Link>
+      </p>
+    </div>
+  );
+}
 
 const SignUp = () => {
   const { authState } = useAuthStatus();
@@ -35,7 +50,8 @@ const SignUp = () => {
         />
       </div>
       <Divider />
-      <SignUpForm />
+      <EmailFormComponent authAction={"sign-up"} />
+      <RedirectToSignIn/>
       <LegalTOSText />
     </div>
   );

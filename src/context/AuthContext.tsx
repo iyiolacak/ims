@@ -19,28 +19,32 @@ export const otpCodeSchema = z.object({
   OTPCode: z.string().min(6, "The one-time password must be 6 digits long"),
 });
 
-const signUpSchema = z.object({
+const emailFormSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
 });
 
-export type SignUpFormValuesType = z.infer<typeof signUpSchema>;
+export type EmailForm = z.infer<typeof emailFormSchema>;
 
-export type OTPCodeFormValuesType = z.infer<typeof otpCodeSchema>;
+export type OTPCodeForm = z.infer<typeof otpCodeSchema>;
 
 export interface AuthContextValue {
   authStage: AuthStage;
-  onSignUpFormSubmit: (data: SignUpFormValuesType) => Promise<void>;
-  onOTPFormSubmit: (data: OTPCodeFormValuesType) => Promise<void>;
-  signUpFormMethods: UseFormReturn<SignUpFormValuesType>;
-  signUpOTPMethods: UseFormReturn<OTPCodeFormValuesType>;
+  onSignUpFormSubmit: (data: EmailForm) => Promise<void>;
+  onOTPFormSubmit: (data: OTPCodeForm) => Promise<void>;
+  emailFormMethods: UseFormReturn<EmailForm>;
+  OTPFormMethods: UseFormReturn<OTPCodeForm>;
   submittedData: AuthFormValuesType | undefined;
   authState: AuthState;
   authServerError: ClerkAPIError[] | undefined;
   shakeState: Record<string, boolean>;
-  isLoaded: any;
-  signUp: any;
-  setActive: any;
 }
+
+/**
+ * Represents the authentication action.
+ * 
+ * @type {"sign-in" | "sign-up" | "forgot-password"}
+ */
+export type AuthAction = 'sign-up' | 'sign-in' | 'forgot-password'
 // Sign-up and OTP submission logic functions, `(onSignUpSubmit, onOTPSubmit)`
 //
 
@@ -62,10 +66,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     authState,
     authServerError,
     shakeState,
-    resetAuth,
+    resetSubmittingState,
   } = useAuthStatus();
 
-  const onSignUpFormSubmit = async (data: SignUpFormValuesType) => {
+  const onSignUpFormSubmit = async (data: EmailForm) => {
     if (!isLoaded) return;
     startSubmission();
     try {
@@ -91,14 +95,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   //
 
-  const onOTPFormSubmit = async (OTPCodeData: OTPCodeFormValuesType) => {
+  const SUBMISSION_TIMEOUT = 30000; // 30 seconds
+
+  const onOTPFormSubmit = async (OTPCodeData: OTPCodeForm) => {
     if (!isLoaded || !signUp) return;
     console.log("submission starts");
     startSubmission();
+
+    let timeoutId = setTimeout(() => {
+      // Reset submission state after timeout
+      resetSubmittingState();
+      handleError([
+        {
+          code: "submission_timeout",
+          message: "Submission timed out. Please try again.",
+        },
+      ]);
+    }, SUBMISSION_TIMEOUT);
+
     try {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: OTPCodeData.OTPCode,
       });
+
+      clearTimeout(timeoutId); // Clear the timeout if the submission completes
+
       if (completeSignUp.status === "complete") {
         setStage(AuthStage.Completed);
         markSuccess();
@@ -111,16 +132,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     } catch (error) {
       const clerkErrors = getClerkError(error); // Returns err.errors | (property) ClerkAPIResponseError.errors: ClerkAPIError[]
+      clearTimeout(timeoutId); // Clear the timeout if an error occurs
       if (clerkErrors) {
         handleError(clerkErrors); // Turns auth state AuthState.Error, gets the errors on the error state to reflect on the UI.
       }
     }
   };
 
-  const signUpFormMethods = useForm<SignUpFormValuesType>({
-    resolver: zodResolver(signUpSchema),
+  const emailFormMethods = useForm<EmailForm>({
+    resolver: zodResolver(emailFormSchema),
   });
-  const signUpOTPMethods = useForm<OTPCodeFormValuesType>({
+  const OTPFormMethods = useForm<OTPCodeForm>({
     resolver: zodResolver(otpCodeSchema),
   });
 
@@ -131,16 +153,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     authStage,
     onSignUpFormSubmit,
     onOTPFormSubmit,
-    signUpFormMethods,
-    signUpOTPMethods,
+    emailFormMethods,
+    OTPFormMethods,
     submittedData,
-    isLoaded,
-    signUp,
-    setActive,
   };
   return (
     <AuthContext.Provider value={values}>
-      <FormProvider {...signUpFormMethods}>{children}</FormProvider>
+      <FormProvider {...emailFormMethods}>{children}</FormProvider>
     </AuthContext.Provider>
   );
 };
@@ -148,7 +167,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useSignUpContext must be used within a SignUpProvider");
+    throw new Error("useAuthContext must be used within a AuthProvider");
   }
   return context;
 };

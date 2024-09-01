@@ -43,6 +43,7 @@ const SignUpPage = () => {
         </motion.div>
       )}
     </AnimatePresence>
+    
       </div>
   )
 };

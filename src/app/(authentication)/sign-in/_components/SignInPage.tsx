@@ -5,15 +5,19 @@ import OAuthSignInButton from "../../sign-up/_components/OAuthSignInButton";
 import Divider from "../../sign-up/_components/Divider";
 import LegalTOSText from "../../sign-up/_components/LegalTOSText";
 import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
+import EmailFormComponent from "../../sign-up/_components/EmailFormComponent";
 
 function RedirectToCreateAccount() {
   return (
     <div>
-      <p className="flex flex-row">
+      <p className="flex flex-row text-sm mt-5">
         Don&apos;t have an account yet?&nbsp;
-        <span className="text-blue-700 flex flex-row">
-          Create an account <ArrowUpRight size={16} />
-        </span>
+        <Link href={"/sign-up"}>
+          <button className="flex flex-row px-0.5 text-primary hover:underline">
+            Create an account <ArrowUpRight size={16} />
+          </button>
+        </Link>
       </p>
     </div>
   );
@@ -27,7 +31,6 @@ const SignInPage = () => {
         title="
         Continue where you left off.
         "
-        headerSize={36}
         subtitle={
           <>
             Sign in to keep things running smoothly.&nbsp;
@@ -46,8 +49,8 @@ const SignInPage = () => {
       </div>
       {/* (component) 'Or' divider */}
       <Divider />
-      {/* <SignUpForm /> */}
-      <RedirectToCreateAccount /> <LegalTOSText />
+      <EmailFormComponent authAction={"sign-in"} />
+      <RedirectToCreateAccount /><LegalTOSText />
     </div>
   );
 };

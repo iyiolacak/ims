@@ -21,7 +21,7 @@ const VerifyEmail = () => {
             </span>
           </h3>
         </div>
-        <OTPForm />
+        <OTPForm/>
         <div className="mt-10 text-center">
           <h3 className="text-md font-normal tracking-tight">
             Didn&apos;t receive a code yet?
