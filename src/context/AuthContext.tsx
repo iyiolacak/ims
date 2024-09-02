@@ -150,6 +150,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             handleError(clerkErrors);
           }
         }
+        default:
+          console.error(`Unknown auth action: ${authAction}`);
+          throw new Error(`Unsupported auth action: ${authAction}`);
     }
   };
 

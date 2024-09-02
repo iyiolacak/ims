@@ -1,5 +1,5 @@
 import Logo from "@/app/(dashboard)/dashboard/components/Logo";
-import React from "react";
+import React, { useEffect } from "react";
 import SectionHeader from "../../sign-up/_components/SectionHeader";
 import OAuthSignInButton from "../../sign-up/_components/OAuthSignInButton";
 import Divider from "../../sign-up/_components/Divider";
@@ -7,6 +7,8 @@ import LegalTOSText from "../../sign-up/_components/LegalTOSText";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import EmailFormComponent from "../../sign-up/_components/EmailFormComponent";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/clerk-react";
 
 function RedirectToCreateAccount() {
   return (
@@ -24,6 +26,14 @@ function RedirectToCreateAccount() {
 }
 
 const SignInPage = () => {
+
+  const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth();
+  useEffect(() => {
+    router.push("/dashboard");
+  }, [isLoaded, isSignedIn, router]);
+
+
   return (
     <div className="flex flex-col items-center px-4 py-3">
       <Logo size={48} className="flex items-center py-3" />
