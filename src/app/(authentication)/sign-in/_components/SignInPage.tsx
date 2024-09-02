@@ -26,7 +26,7 @@ function RedirectToCreateAccount() {
 const SignInPage = () => {
   return (
     <div className="flex flex-col items-center px-4 py-3">
-      <Logo size={48} className="flex items-center py-7" />
+      <Logo size={48} className="flex items-center py-3" />
       <SectionHeader
         title="
         Continue where you left off.

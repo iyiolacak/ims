@@ -6,7 +6,7 @@ import {
   AuthState,
   useAuthStatus,
 } from "@/hooks/useAuthStatus";
-import { useSignUp as useClerkSignUp } from "@clerk/clerk-react";
+import { useSignUp as useClerkSignUp, useSignIn as useClerkSignIn } from "@clerk/clerk-react";
 import { ClerkAPIError } from "@clerk/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -29,7 +29,7 @@ export type OTPCodeForm = z.infer<typeof otpCodeSchema>;
 
 export interface AuthContextValue {
   authStage: AuthStage;
-  onSignUpFormSubmit: (data: EmailForm) => Promise<void>;
+  onEmailFormSubmit: (data: EmailForm, authAction: AuthAction) => Promise<void>;
   onOTPFormSubmit: (data: OTPCodeForm) => Promise<void>;
   emailFormMethods: UseFormReturn<EmailForm>;
   OTPFormMethods: UseFormReturn<OTPCodeForm>;
@@ -54,7 +54,9 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 //
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const { isLoaded, signUp, setActive } = useClerkSignUp();
+  const { isLoaded: isSignUpLoaded, signUp, setActive: setSignUpActive } = useClerkSignUp();
+  const { isLoaded: isSignInLoaded, signIn, setActive: setSignInActive } = useClerkSignIn();
+
   const {
     setStage,
     handleError,
@@ -69,8 +71,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     resetSubmittingState,
   } = useAuthStatus();
 
-  const onSignUpFormSubmit = async (data: EmailForm) => {
-    if (!isLoaded) return;
+  const onEmailFormSubmit = async (data: EmailForm) => {
+    // TODO: Action-Specific Logic: Each action has its own dedicated section in the switch statement, making it easier to manage action-specific logic like isSignUpLoaded without interfering with other actions.
+    if (!isSignUpLoaded) return;
     startSubmission();
     try {
       await signUp.create({
@@ -97,8 +100,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const SUBMISSION_TIMEOUT = 30000; // 30 seconds
 
+
+  // TODO: Make it both compatible for sign up and sign in as well.
   const onOTPFormSubmit = async (OTPCodeData: OTPCodeForm) => {
-    if (!isLoaded || !signUp) return;
+    if (!isSignUpLoaded || !signUp) return;
     console.log("submission starts");
     startSubmission();
 
@@ -123,7 +128,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (completeSignUp.status === "complete") {
         setStage(AuthStage.Completed);
         markSuccess();
-        await setActive({
+        await setSignUpActive({
           session: signUp.createdSessionId,
         });
         router.push("/dashboard");
@@ -151,7 +156,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     authServerError,
     shakeState,
     authStage,
-    onSignUpFormSubmit,
+    onEmailFormSubmit,
     onOTPFormSubmit,
     emailFormMethods,
     OTPFormMethods,

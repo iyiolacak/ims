@@ -29,7 +29,7 @@ const SignUp = () => {
   const { authState } = useAuthStatus();
   return (
     <div className="flex w-full flex-col items-center px-4 py-3">
-      <Logo size={48} className="flex items-center py-7" />
+      <Logo size={48} className="flex items-center py-3" />
       <SectionHeader
         title="Create your Einv account."
         subtitle={

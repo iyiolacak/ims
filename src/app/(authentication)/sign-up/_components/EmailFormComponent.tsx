@@ -36,7 +36,7 @@ const EmailFormComponent: React.FC<EmailFormProps> = ({ authAction }) => {
     setFocus,
     formState: { errors },
   } = useFormContext<EmailForm>();
-  const { onSignUpFormSubmit }: AuthContextValue = useAuthContext();
+  const { onEmailFormSubmit }: AuthContextValue = useAuthContext();
   // Focus on the email input field when the component mounts
 
   useEffect(() => {
@@ -45,7 +45,10 @@ const EmailFormComponent: React.FC<EmailFormProps> = ({ authAction }) => {
 
   return (
     <div className="min-w-full flex-col">
-      <form onSubmit={handleSubmit(onSignUpFormSubmit)}>
+      <form onSubmit={handleSubmit((data) => {
+        onEmailFormSubmit(data, authAction)
+      }
+      )}>
         <div className="flex flex-col gap-y-4">
           <AnimatedInput
             id="email"
