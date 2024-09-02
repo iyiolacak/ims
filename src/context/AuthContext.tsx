@@ -109,6 +109,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             handleError(clerkErrors);
           }
         }
+        break;
       case "sign-in":
         if (!isSignInLoaded) {
           console.warn("Sign-in not loaded yet");
@@ -150,9 +151,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             handleError(clerkErrors);
           }
         }
-        default:
-          console.error(`Unknown auth action: ${authAction}`);
-          throw new Error(`Unsupported auth action: ${authAction}`);
+        break;
+      default:
+        console.error(`Unknown auth action: ${authAction}`);
+        throw new Error(`Unsupported auth action: ${authAction}`);
     }
   };
 

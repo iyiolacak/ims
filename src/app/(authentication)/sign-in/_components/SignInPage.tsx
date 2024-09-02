@@ -1,3 +1,4 @@
+"use client";
 import Logo from "@/app/(dashboard)/dashboard/components/Logo";
 import React, { useEffect } from "react";
 import SectionHeader from "../../sign-up/_components/SectionHeader";
