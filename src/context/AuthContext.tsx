@@ -6,7 +6,10 @@ import {
   AuthState,
   useAuthStatus,
 } from "@/hooks/useAuthStatus";
-import { useSignUp as useClerkSignUp, useSignIn as useClerkSignIn } from "@clerk/clerk-react";
+import {
+  useSignUp as useClerkSignUp,
+  useSignIn as useClerkSignIn,
+} from "@clerk/clerk-react";
 import { ClerkAPIError } from "@clerk/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -41,10 +44,10 @@ export interface AuthContextValue {
 
 /**
  * Represents the authentication action.
- * 
+ *
  * @type {"sign-in" | "sign-up" | "forgot-password"}
  */
-export type AuthAction = 'sign-up' | 'sign-in' | 'forgot-password'
+export type AuthAction = "sign-up" | "sign-in" | "forgot-password";
 // Sign-up and OTP submission logic functions, `(onSignUpSubmit, onOTPSubmit)`
 //
 
@@ -54,8 +57,16 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 //
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const { isLoaded: isSignUpLoaded, signUp, setActive: setSignUpActive } = useClerkSignUp();
-  const { isLoaded: isSignInLoaded, signIn, setActive: setSignInActive } = useClerkSignIn();
+  const {
+    isLoaded: isSignUpLoaded,
+    signUp,
+    setActive: setSignUpActive,
+  } = useClerkSignUp();
+  const {
+    isLoaded: isSignInLoaded,
+    signIn,
+    setActive: setSignInActive,
+  } = useClerkSignIn();
 
   const {
     setStage,
@@ -71,28 +82,74 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     resetSubmittingState,
   } = useAuthStatus();
 
-  const onEmailFormSubmit = async (data: EmailForm) => {
-    // TODO: Action-Specific Logic: Each action has its own dedicated section in the switch statement, making it easier to manage action-specific logic like isSignUpLoaded without interfering with other actions.
-    if (!isSignUpLoaded) return;
-    startSubmission();
-    try {
-      await signUp.create({
-        emailAddress: data.email,
-      });
+  const onEmailFormSubmit = async (data: EmailForm, authAction: AuthAction) => {
+    switch (authAction) {
+      case "sign-up":
+        // TODO: Action-Specific Logic: Each action has its own dedicated section in the switch statement, making it easier to manage action-specific logic like isSignUpLoaded without interfering with other actions.
+        if (!isSignUpLoaded) {
+          console.warn("Sign-up not loaded yet");
+          return;
+        }
 
-      await signUp.prepareEmailAddressVerification({
-        strategy: "email_code",
-      });
-      setSubmittedData(data);
-      setStage(AuthStage.Verifying);
-      console.log(authStage);
-      markSuccess();
-      // You might want to update your UI state here to show a verification form
-    } catch (error) {
-      const clerkErrors = getClerkError(error);
-      if (clerkErrors) {
-        handleError(clerkErrors);
-      }
+        startSubmission();
+        try {
+          await signUp.create({
+            emailAddress: data.email,
+          });
+
+          await signUp.prepareEmailAddressVerification({
+            strategy: "email_code",
+          });
+          setSubmittedData(data);
+          setStage(AuthStage.Verifying);
+          markSuccess();
+        } catch (error) {
+          const clerkErrors = getClerkError(error);
+          if (clerkErrors) {
+            handleError(clerkErrors);
+          }
+        }
+      case "sign-in":
+        if (!isSignInLoaded) {
+          console.warn("Sign-in not loaded yet");
+          return;
+        }
+
+        startSubmission();
+        try {
+          await signIn.create({
+            identifier: data.email,
+          });
+
+          const supportedFirstFactors = signIn.supportedFirstFactors;
+
+          const emailCodeFactor = supportedFirstFactors.find(
+            (factor) => factor.strategy === "email_code",
+          );
+
+          const phoneCodeFactor = supportedFirstFactors.find(
+            (factor) => factor.strategy === "phone_code",
+          );
+
+          if (emailCodeFactor) {
+            await signIn.prepareFirstFactor({
+              strategy: "email_code",
+              emailAddressId: emailCodeFactor.emailAddressId,
+            });
+          } else if (phoneCodeFactor) {
+            await signIn.prepareFirstFactor({
+              strategy: "phone_code",
+              phoneNumberId: phoneCodeFactor.phoneNumberId,
+            });
+          } else {
+            throw new Error("No valid verification method found.");
+          }
+        } catch (error) {
+          const clerkErrors = getClerkError(error);
+          if (clerkErrors) {
+            handleError(clerkErrors);
+          }
+        }
     }
   };
 
@@ -100,11 +157,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const SUBMISSION_TIMEOUT = 30000; // 30 seconds
 
-
   // TODO: Make it both compatible for sign up and sign in as well.
   const onOTPFormSubmit = async (OTPCodeData: OTPCodeForm) => {
-    if (!isSignUpLoaded || !signUp) return;
-    console.log("submission starts");
+    if (!isSignUpLoaded || !isSignInLoaded) return;
+
     startSubmission();
 
     let timeoutId = setTimeout(() => {

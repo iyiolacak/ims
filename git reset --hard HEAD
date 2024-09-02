@@ -1,0 +1,45 @@
+[33m99a3b2b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m - Layout changes - Authentication structure is now more stabilized and added TODOs. onSignUpFormSubmit function converted to onEmailFormSubmit and in the next commits it will be compatible for every authAction, such as sign-up, sign-in, forgot-password.
+[33ma177f92[m - oAuth wasn't working, so it's been fixed now: useOAuthHandler just got better and better.
+[33m0d926fd[m - DRY principles applied. - SignUpForm component has been converted into "EmailFormComponent" - EmailFormComponent is both usable and compatible for "sign-in" and "sign-up" flows, even "forgot-password" as well with some modification, all it requires is just passing the prop if it is sign-in | sign-up | forgot-password. - Passwordless authentication applied via Clerk -- completely custom flows are being created and used in this project.
+[33mf27b288[m Major auth revamp - Refactored sign-up forms and stage flows for smoother user journey - Optimized context handling and removed redundant code to boost performance - fixed bugs and tightened up the codebase for future scalability. - bzzt shake effect for the server error respond and rootly integration with input components by right one shaking
+[33m8aac884[m Refactored key components for improved maintainability and performance. Enhanced user experience with streamlined forms and optimized loading times.
+[33m811c841[m - Inituitive "Bzzt" animation reaction effect on server error response. Improvements on ErrorDisplay reusable error displaying component and added more props for flexilibity. - Sign-in & sign-up pages are not Clerk hosted on system - Now, we're redirected to localhost:3000/sign-in instead of a Clerk hosted URL. - OTP is sent to API so it is functional. - Sign up custom flow works. Some required to dos exist. - Middleware modifications - Updated Next.js and @clerk/nextjs versions. - useAuthStatus custom hook is now providing us a "shake" data for inituitive UX reactions.
+[33m1a882c3[m - Inituitive "Bzzt" animation reaction effect on server error response. Improvements on ErrorDisplay reusable error displaying component and added more props for flexilibity. - Sign-in & sign-up pages are not Clerk hosted on system - Now, we're redirected to localhost:3000/sign-in instead of a Clerk hosted URL. - OTP is sent to API so it is functional. - Sign up custom flow works. Some required to dos exist. - Middleware modifications - Updated Next.js and @clerk/nextjs versions. - useAuthStatus custom hook is now providing us a "shake" data for inituitive UX reactions.
+[33mc404093[m - Structure is lot more cleaner.     -Now, page.tsx conditionally showing email input form and 2FA also with no URL change but global state management thanks to SignUpContext. - Input OTP is now handling value and is using react-hook-form - also do auto focus. - Seamless animation between pages thanks to clean structure of sign-up and 2fa screen!
+[33m739a63e[m - new: SignUpContext added for globally providing the signUp from Clerk's useSignUp
+[33m1572237[m new: SignUpContext has added: for globally providing `signUp` object from Clerk's useSignUp which lets us create custom sign up flows.
+[33m7ba9d5b[m feat: OTPForm auto-focus input on page load using useRef and useEffect
+[33m70d86eb[m - Stage indicator re-render fixed. - Stages are memoizing. - Stages are managed directly from SignUpStageIndicator with usePathname switch cases. - Input is now automatically focused for a better UX and works in peace with useForm hook ref's at the same time. - isSubmitting state is global for whole page disabling for better UX. - OAuth is now disabled as well in the submitting state. - Rooted layout adjustments preventing the tech debt.
+[33m92daed7[m Perfect layout for sign-up. Many features. Email OTP. No animation between pages. Sign-up stage indicator. Now, serverError is specified under the submit button
+[33m6080bc5[m Refactor: Enhance Project Structure, UX, new features, and Performance
+[33m81713de[m Acknowledgements
+[33m402c192[m feat: Complete multiple features and implement various fixes
+[33md3f086a[m[33m ([m[1;31morigin/categories---optimistic-load[m[33m)[m Key Features Type-safe Configurations: A Config interface was added to ensure variant definitions are type-safe, giving strong guarantees about class configurations' validity. Flexible Variants System: Implemented a Variants type system that allows dynamic generation of class names based on variant configurations provided, allowing for reusability and maintainability. Default Variant Handling: Provided additional functionality to allow default variants to apply common styles without unnecessary repetition. Utility Functions: Added cn and createVariants utility functions to facilitate class merging and variant handling. This allows one to encapsulate very tricky logic within reusable blocks. Example Configuration and Usage: Demonstrates how flexible and powerful the system is using an example configuration for button sizes and colors; demonstrates how the utility extension towards more use cases is so easy. Benefits: Improved Developer Experience: There is an enhanced developer experience since utilities offer a type-safe, flexible manner of managing class names. This avoids cognitive overload on developers, providing more time to work on features than on styles. Improved Code Maintainability: Abstracting the logic to generate class names into well-defined functions and types makes the code more readable and maintainable, hence easily extensible and modifiable for the longer life of the system. Scalable Design System: Outlining the foundations of a design system that can scale with ease, where all components would have a consistent style applied yet be flexible for customization when required. This commitment is a huge step forward for our styling capabilities, highlighting a deep understanding and significance of type safety in the modern web development arena for TypeScript and utility-first CSS.
+[33m77f6188[m Developed a more advanced utility to generate dynamic class names in the TypeScript environment by relying on the powerful features of `clsx` and `tailwind-merge` to merge classes and offer conditional styling.
+[33m966a3e4[m Sidebar glitchy animation fix and smoother animation implications.
+[33m7e77c3f[m - Sidebar icons being at excessive size fix.
+[33mdf7e75d[m Field builder logs to console and works. hydration errors to be fixed.
+[33me91015f[m Category Editing Mode, Toast Provider, Bug fixes
+[33m8543651[m optimistic load. formSubmitDisabled = isSubmitting
+[33m68477ba[m Backend for category GET(mapping/listing), create, remove.
+[33mf149484[m addCategoryModal form works with optional emoji. Form values are: 'categoryName' and 'emoji'
+[33m1c40199[m Completed EmojiPicker implementation: URL query now triggers AddCategoryModal, albeit with multiple renderings. Upcoming commit will address this issue with the integration of context and provider.
+[33macd2548[m - Emoji Picker
+[33m02af996[m Optimize emoji picker and update category modals
+[33m0c7d7b9[m feat: Add and update various components for product management
+[33m360302e[m feat: Add and update various components for product management
+[33m2f15053[m - deleted SalesCard since project now has a DynamicCard.tsx
+[33m347a259[m - Add product button -Table is dynamic now. - Draft and Published tab buttons are functional now. - Mock data now has the right data structure. - Sidebar Responsiveness(not finished).
+[33mef0e0c7[m Highly flexible dynamic card. Hashtags can understand if it is sales card or revenue. Dynamically hashtag or data tags. Enhanced UX, card month picker.
+[33m6afdc23[m Chart on the Card, fade effect to the chart and index selection and styling a specific chart bar mechanism. Z-index and absolute for positioning the chart
+[33ma5adc89[m testing charts - instable
+[33m1dd0691[m Cards, card mini components(CardHashtag, CardGrowthMiniCard)...
+[33m5d4200c[m table
+[33m471e31c[m Cards update
+[33m89ea7af[m Sidebar, Skeleton, Sidebar black bar animation, Sidebar load animation, WelcomeSection component, Cards(unfinished), User Button, Search in sidebar... component.
+[33m91fe49b[m Convex type assortion errors fix
+[33m11cdf80[m Clerk, Convex database sync integration
+[33mdbfb7ec[m Convex, Clerk webhook sync integration
+[33mce84db0[m Navbar custom user button Middleware and clerkMiddleware protection addIngredient Client & Convex ...
+[33m42dcdb7[m Clerk + Convex
+[33m4a6df81[m Initial commit from Create Next App
